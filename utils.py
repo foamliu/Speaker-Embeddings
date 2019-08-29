@@ -133,6 +133,9 @@ def parse_args():
     # optimizer
     parser.add_argument('--margin-m', type=float, default=0.5, help='angular margin m')
     parser.add_argument('--margin-s', type=float, default=64.0, help='feature scale s')
+    parser.add_argument('--emb-size', type=int, default=512, help='embedding length')
+    parser.add_argument('--easy-margin', type=bool, default=False, help='easy margin')
+
     parser.add_argument('--lr', default=0.001, type=float,
                         help='learning rate')
     parser.add_argument('--k', default=0.2, type=float,
