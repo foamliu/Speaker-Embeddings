@@ -7,8 +7,7 @@ from tqdm import tqdm
 from config import device, print_freq, grad_clip
 from data_gen import VoxCeleb1Dataset, pad_collate
 from models.arc_margin import ArcMarginModel
-from models.embedding import SpeakerEmbedding
-from models.encoder import Encoder
+from models.models import GST
 from utils import parse_args, save_checkpoint, AverageMeter, get_logger, accuracy, clip_gradient
 
 
@@ -24,10 +23,7 @@ def train_net(args):
     # Initialize / load checkpoint
     if checkpoint is None:
         # model
-        encoder = Encoder(args.d_input * args.LFR_m, args.n_layers_enc, args.n_head,
-                          args.d_k, args.d_v, args.d_model, args.d_inner,
-                          dropout=args.dropout, pe_maxlen=args.pe_maxlen)
-        model = SpeakerEmbedding(encoder)
+        model = GST()
         metric_fc = ArcMarginModel(args)
 
         # print(model)

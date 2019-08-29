@@ -4,7 +4,7 @@ import numpy as np
 from torch.utils.data import Dataset
 from torch.utils.data.dataloader import default_collate
 
-from config import data_file
+import config as hp
 from utils import extract_feature
 
 
@@ -30,39 +30,10 @@ def pad_collate(batch):
     return default_collate(batch)
 
 
-def build_LFR_features(inputs, m, n):
-    """
-    Actually, this implements stacking frames and skipping frames.
-    if m = 1 and n = 1, just return the origin features.
-    if m = 1 and n > 1, it works like skipping.
-    if m > 1 and n = 1, it works like stacking but only support right frames.
-    if m > 1 and n > 1, it works like LFR.
-    Args:
-        inputs_batch: inputs is T x D np.ndarray
-        m: number of frames to stack
-        n: number of frames to skip
-    """
-    # LFR_inputs_batch = []
-    # for inputs in inputs_batch:
-    LFR_inputs = []
-    T = inputs.shape[0]
-    T_lfr = int(np.ceil(T / n))
-    for i in range(T_lfr):
-        if m <= T - i * n:
-            LFR_inputs.append(np.hstack(inputs[i * n:i * n + m]))
-        else:  # process last LFR frame
-            num_padding = m - (T - i * n)
-            frame = np.hstack(inputs[i * n:])
-            for _ in range(num_padding):
-                frame = np.hstack((frame, inputs[-1]))
-            LFR_inputs.append(frame)
-    return np.vstack(LFR_inputs)
-
-
 class VoxCeleb1Dataset(Dataset):
     def __init__(self, args, split):
         self.args = args
-        with open(data_file, 'rb') as file:
+        with open(hp.data_file, 'rb') as file:
             data = pickle.load(file)
 
         self.samples = data[split]
@@ -73,8 +44,7 @@ class VoxCeleb1Dataset(Dataset):
         wave = sample['audiopath']
         label = sample['label']
 
-        feature = extract_feature(input_file=wave, feature='fbank', dim=self.args.d_input, cmvn=True)
-        feature = build_LFR_features(feature, m=self.args.LFR_m, n=self.args.LFR_n)
+        feature = extract_feature(input_file=wave, feature='fbank', dim=hp.n_mels, cmvn=True)
 
         return feature, label
 
