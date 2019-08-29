@@ -30,7 +30,7 @@ def train_net(args):
         model = SpeakerEmbedding(encoder)
         metric_fc = ArcMarginModel(args)
 
-        print(model)
+        # print(model)
         # model = nn.DataParallel(model)
 
         # optimizer
