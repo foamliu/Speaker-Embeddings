@@ -114,6 +114,8 @@ def train(train_loader, model, metric_fc, criterion, optimizer, epoch, logger):
         input_lengths = input_lengths.to(device)
         label = label.to(device)
 
+        print('padded_input.size(): ' + str(padded_input.size()))
+
         # Forward prop.
         feature = model(padded_input, input_lengths)  # embedding => [N, 512]
         output = metric_fc(feature, label)  # class_id_out => [N, 1251]
