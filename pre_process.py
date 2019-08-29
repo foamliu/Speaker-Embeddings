@@ -13,15 +13,18 @@ def get_data():
     classes = []
     samples = []
 
-    for d in dirs:
-        classes.append(d)
-        folder = os.path.join(wav_folder, d)
-        files = [f for f in os.listdir(folder) if f.endswith('.wav')]
-        for f in files:
-            audiopath = os.path.join(folder, f)
-            build_dict(audiopath)
-            label = audiopath_to_label[audiopath]
-            samples.append({'audiopath': audiopath, 'label': label})
+    for id in dirs:
+        classes.append(id)
+        folder = os.path.join(wav_folder, id)
+        sub_folders = [s for s in os.listdir(folder)]
+        for sub in sub_folders:
+            sub_folder = os.path.join(folder, sub)
+            files = [f for f in os.listdir(sub_folder) if f.endswith('.wav')]
+            for f in files:
+                audiopath = os.path.join(sub_folder, f)
+                build_dict(audiopath)
+                label = audiopath_to_label[audiopath]
+                samples.append({'audiopath': audiopath, 'label': label})
 
     print('num_files: {}'.format(len(samples)))
     return samples, classes
@@ -55,3 +58,5 @@ if __name__ == "__main__":
     print('num_train: ' + str(len(data['train'])))
     print('num_valid: ' + str(len(data['valid'])))
     print('num_classes: ' + str(len(classes)))
+
+    print(samples[:10])
