@@ -61,7 +61,7 @@ def train_net(args):
     train_dataset = VoxCeleb1Dataset(args, 'train')
     train_loader = torch.utils.data.DataLoader(train_dataset, batch_size=args.batch_size, collate_fn=pad_collate,
                                                pin_memory=True, shuffle=True, num_workers=args.num_workers)
-    valid_dataset = VoxCeleb1Dataset(args, 'dev')
+    valid_dataset = VoxCeleb1Dataset(args, 'valid')
     valid_loader = torch.utils.data.DataLoader(valid_dataset, batch_size=args.batch_size, collate_fn=pad_collate,
                                                pin_memory=True, shuffle=False, num_workers=args.num_workers)
 
