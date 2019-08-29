@@ -79,7 +79,6 @@ def parse_args():
     parser = argparse.ArgumentParser(description='Speech Transformer')
     # Network architecture
     # encoder
-    # TODO: automatically infer input dim
     parser.add_argument('--d_input', default=80, type=int,
                         help='Dim of encoder input (before LFR)')
     parser.add_argument('--n_layers_enc', default=6, type=int,
@@ -131,12 +130,8 @@ def parse_args():
     parser.add_argument('--emb-size', type=int, default=512, help='embedding length')
     parser.add_argument('--easy-margin', type=bool, default=False, help='easy margin')
 
-    parser.add_argument('--lr', default=0.001, type=float,
+    parser.add_argument('--lr', default=0.1, type=float,
                         help='learning rate')
-    parser.add_argument('--k', default=0.2, type=float,
-                        help='tunable scalar multiply to learning rate')
-    parser.add_argument('--warmup_steps', default=4000, type=int,
-                        help='warmup steps')
 
     parser.add_argument('--checkpoint', type=str, default=None, help='checkpoint')
     args = parser.parse_args()

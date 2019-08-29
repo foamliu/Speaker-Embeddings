@@ -68,25 +68,28 @@ def train_net(args):
     # Epochs
     for epoch in range(start_epoch, args.epochs):
         # One epoch's training
-        train_loss = train(train_loader=train_loader,
-                           model=model,
-                           metric_fc=metric_fc,
-                           criterion=criterion,
-                           optimizer=optimizer,
-                           epoch=epoch,
-                           logger=logger)
-        writer.add_scalar('Train_Loss', train_loss, epoch)
+        train_loss, train_accuracy = train(train_loader=train_loader,
+                                           model=model,
+                                           metric_fc=metric_fc,
+                                           criterion=criterion,
+                                           optimizer=optimizer,
+                                           epoch=epoch,
+                                           logger=logger)
+        writer.add_scalar('model/train_loss', train_loss, epoch)
+        writer.add_scalar('model/train_accuracy', train_accuracy, epoch)
 
         lr = optimizer.lr
         print('\nLearning rate: {}'.format(lr))
-        writer.add_scalar('Learning_Rate', lr, epoch)
+        writer.add_scalar('model/learning_rate', lr, epoch)
         step_num = optimizer.step_num
         print('Step num: {}\n'.format(step_num))
 
         # One epoch's validation
-        valid_loss = valid(valid_loader=valid_loader,
-                           model=model,
-                           logger=logger)
+        valid_loss, valid_accuracy = valid(valid_loader=valid_loader,
+                                           model=model,
+                                           metric_fc=metric_fc,
+                                           criterion=criterion,
+                                           logger=logger)
         writer.add_scalar('Valid_Loss', valid_loss, epoch)
 
         # Check if there was an improvement
@@ -145,7 +148,7 @@ def train(train_loader, model, metric_fc, criterion, optimizer, epoch, logger):
                         'Accuracy {accs.val:.3f} ({accs.avg:.3f})'.format(epoch, i, len(train_loader), loss=losses,
                                                                           accs=accs))
 
-    return losses.avg
+    return losses.avg, accs.avg
 
 
 def valid(valid_loader, model, metric_fc, criterion, logger):
@@ -178,7 +181,7 @@ def valid(valid_loader, model, metric_fc, criterion, logger):
     # Print status
     logger.info('\nValidation Loss {loss.avg:.5f}\tAccuracy {accs.avg:.3f}\n'.format(loss=losses, accs=accs))
 
-    return losses.avg
+    return losses.avg, accs.avg
 
 
 def main():
