@@ -74,7 +74,9 @@ class VoxCeleb1Dataset(Dataset):
         label = sample['label']
 
         feature = extract_feature(input_file=wave, feature='fbank', dim=self.args.d_input, cmvn=True)
+        print('feature.shape: ' + str(feature.shape))
         feature = build_LFR_features(feature, m=self.args.LFR_m, n=self.args.LFR_n)
+        print('feature.shape: ' + str(feature.shape))
 
         return feature, label
 
