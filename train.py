@@ -139,7 +139,7 @@ def train(train_loader, model, metric_fc, criterion, optimizer, epoch, logger):
 
         # Keep track of metrics
         losses.update(loss.item())
-        top1_accuracy = accuracy(output, label, 1)
+        top1_accuracy = accuracy(output, label, 5)
         accs.update(top1_accuracy)
 
         # Print status
@@ -176,7 +176,7 @@ def valid(valid_loader, model, metric_fc, criterion, logger):
 
         # Keep track of metrics
         losses.update(loss.item())
-        top1_accuracy = accuracy(output, label, 1)
+        top1_accuracy = accuracy(output, label, 5)
         accs.update(top1_accuracy)
 
     # Print status
