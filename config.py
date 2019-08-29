@@ -12,26 +12,20 @@ hidden_size = 512
 embedding_dim = 512
 cmvn = True  # apply CMVN on feature
 
-
 # Reference encoder
 ref_enc_filters = [32, 32, 64, 64, 128, 128]
-ref_wav = 'ref_wav/xiaofeng.wav'
 
 # Style token layer
 token_num = 10
 token_emb_size = 512
 num_heads = 8
 
-
 # Training parameters
 grad_clip = 5.  # clip gradients at an absolute value of
-print_freq = 10  # print training/validation stats  every __ batches
+print_freq = 100  # print training/validation stats  every __ batches
 checkpoint = None  # path to checkpoint, None if none
 
 # Data parameters
-IGNORE_ID = -1
-sos_id = 0
-eos_id = 1
 num_train = 148642
 num_valid = 1000
 

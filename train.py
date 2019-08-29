@@ -68,15 +68,15 @@ def train_net(args):
     # Epochs
     for epoch in range(start_epoch, args.epochs):
         # One epoch's training
-        train_loss, train_accuracy = train(train_loader=train_loader,
-                                           model=model,
-                                           metric_fc=metric_fc,
-                                           criterion=criterion,
-                                           optimizer=optimizer,
-                                           epoch=epoch,
-                                           logger=logger)
+        train_loss, train_acc = train(train_loader=train_loader,
+                                      model=model,
+                                      metric_fc=metric_fc,
+                                      criterion=criterion,
+                                      optimizer=optimizer,
+                                      epoch=epoch,
+                                      logger=logger)
         writer.add_scalar('model/train_loss', train_loss, epoch)
-        writer.add_scalar('model/train_accuracy', train_accuracy, epoch)
+        writer.add_scalar('model/train_accuracy', train_acc, epoch)
 
         lr = optimizer.lr
         print('\nLearning rate: {}'.format(lr))
@@ -85,12 +85,13 @@ def train_net(args):
         print('Step num: {}\n'.format(step_num))
 
         # One epoch's validation
-        valid_loss, valid_accuracy = valid(valid_loader=valid_loader,
-                                           model=model,
-                                           metric_fc=metric_fc,
-                                           criterion=criterion,
-                                           logger=logger)
-        writer.add_scalar('Valid_Loss', valid_loss, epoch)
+        valid_loss, valid_acc = valid(valid_loader=valid_loader,
+                                      model=model,
+                                      metric_fc=metric_fc,
+                                      criterion=criterion,
+                                      logger=logger)
+        writer.add_scalar('model/valid_loss', valid_loss, epoch)
+        writer.add_scalar('model/valid_accuracy', valid_acc, epoch)
 
         # Check if there was an improvement
         is_best = valid_loss < best_loss
