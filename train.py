@@ -118,7 +118,6 @@ def train(train_loader, model, metric_fc, criterion, optimizer, epoch, logger):
 
         # Forward prop.
         feature = model(padded_input)  # embedding => [N, 512]
-        print('feature.size(): ' + str(feature.size()))
         output = metric_fc(feature, label)  # class_id_out => [N, 1251]
 
         # Calculate loss
