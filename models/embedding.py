@@ -25,18 +25,3 @@ class SpeakerEmbedding(nn.Module):
         print('embedding.size(): ' + str(embedding.size()))
 
         return embedding
-
-    def recognize(self, input, input_length, char_list, args):
-        """Sequence-to-Sequence beam search, decode one utterence now.
-        Args:
-            input: T x D
-            char_list: list of characters
-            args: args.beam
-        Returns:
-            nbest_hyps:
-        """
-        encoder_outputs, *_ = self.encoder(input.unsqueeze(0), input_length)
-        nbest_hyps = self.decoder.recognize_beam(encoder_outputs[0],
-                                                 char_list,
-                                                 args)
-        return nbest_hyps
