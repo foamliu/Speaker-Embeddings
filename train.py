@@ -78,11 +78,11 @@ def train_net(args):
         writer.add_scalar('model/train_loss', train_loss, epoch)
         writer.add_scalar('model/train_accuracy', train_acc, epoch)
 
-        lr = optimizer.lr
-        print('\nLearning rate: {}'.format(lr))
-        writer.add_scalar('model/learning_rate', lr, epoch)
-        step_num = optimizer.step_num
-        print('Step num: {}\n'.format(step_num))
+        # lr = optimizer.lr
+        # print('\nLearning rate: {}'.format(lr))
+        # writer.add_scalar('model/learning_rate', lr, epoch)
+        # step_num = optimizer.step_num
+        # print('Step num: {}\n'.format(step_num))
 
         # One epoch's validation
         valid_loss, valid_acc = valid(valid_loader=valid_loader,
