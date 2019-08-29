@@ -41,8 +41,7 @@ def train_net(args):
         print('trainable params: ' + str(trainable_params))
 
         # optimizer
-        optimizer = TransformerOptimizer(
-            torch.optim.Adam(model.parameters(), lr=args.lr, betas=(0.9, 0.98), eps=1e-09))
+        optimizer = torch.optim.Adam(model.parameters(), lr=args.lr, betas=(0.9, 0.98), eps=1e-09)
 
     else:
         checkpoint = torch.load(checkpoint)
