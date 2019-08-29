@@ -33,11 +33,6 @@ def train_net(args):
         print(model)
         print(metric_fc)
         # model = nn.DataParallel(model)
-        total_params = sum(p.numel() for p in (model.parameters() + metric_fc.parameters()))
-        trainable_params = sum(p.numel() for p in (model.parameters() + metric_fc.parameters()) if p.requires_grad)
-
-        print('total params: ' + str(total_params))
-        print('trainable params: ' + str(trainable_params))
 
         # optimizer
         optimizer = torch.optim.Adam([{'params': model.parameters()}, {'params': metric_fc.parameters()}], lr=args.lr,
