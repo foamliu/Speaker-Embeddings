@@ -31,7 +31,6 @@ def train_net(args):
         metric_fc = ArcMarginModel(args)
 
         print(model)
-        print(metric_fc)
         # model = nn.DataParallel(model)
 
         # optimizer
