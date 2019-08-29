@@ -25,7 +25,7 @@ IGNORE_ID = -1
 sos_id = 0
 eos_id = 1
 num_train = 148642
-num_dev = 14326
+num_valid = 1000
 
 num_classes = 1251
 
