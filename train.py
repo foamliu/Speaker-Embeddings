@@ -113,11 +113,11 @@ def train(train_loader, model, metric_fc, criterion, optimizer, epoch, logger):
         # Move to GPU, if available
         padded_input, input_lengths, label = data
         padded_input = padded_input.to(device)
-        input_lengths = input_lengths.to(device)
+        # input_lengths = input_lengths.to(device)
         label = label.to(device)
 
         # Forward prop.
-        feature = model(padded_input, input_lengths)  # embedding => [N, 512]
+        feature = model(padded_input)  # embedding => [N, 512]
         print('feature.size(): ' + str(feature.size()))
         output = metric_fc(feature, label)  # class_id_out => [N, 1251]
 
@@ -160,12 +160,12 @@ def valid(valid_loader, model, metric_fc, criterion, logger):
         # Move to GPU, if available
         padded_input, input_lengths, label = data
         padded_input = padded_input.to(device)
-        input_lengths = input_lengths.to(device)
+        # input_lengths = input_lengths.to(device)
         label = label.to(device)
 
         # Forward prop.
         with torch.no_grad():
-            feature = model(padded_input, input_lengths)  # embedding => [N, 512]
+            feature = model(padded_input)  # embedding => [N, 512]
             output = metric_fc(feature, label)  # class_id_out => [N, 1251]
 
         # Calculate loss
