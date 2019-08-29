@@ -4,7 +4,7 @@ import zipfile
 def extract(filename):
     print('Extracting {}...'.format(filename))
     tar = zipfile.ZipFile(filename, 'r')
-    tar.extractall('data')
+    tar.extractall('data/vox1')
     tar.close()
 
 

@@ -31,6 +31,6 @@ num_classes = 1211
 
 DATA_DIR = 'data'
 aishell_folder = 'data/data_aishell'
-wav_folder = os.path.join(aishell_folder, 'wav')
+wav_folder = 'data/wav'
 tran_file = os.path.join(aishell_folder, 'transcript/aishell_transcript_v0.8.txt')
 pickle_file = 'data/aishell.pickle'
