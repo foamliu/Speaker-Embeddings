@@ -1,13 +1,13 @@
 import zipfile
 
 
-def extract(filename, folder):
+def extract(filename):
     print('Extracting {}...'.format(filename))
     tar = zipfile.ZipFile(filename, 'r')
-    tar.extractall('data/' + folder)
+    tar.extractall('data')
     tar.close()
 
 
 if __name__ == "__main__":
-    extract('data/vox1_dev_wav.zip', 'train')
-    extract('data/vox1_test_wav.zip', 'valid')
+    extract('data/vox1_dev_wav.zip')
+    extract('data/vox1_test_wav.zip')
