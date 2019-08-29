@@ -22,7 +22,7 @@ class SpeakerEmbedding(nn.Module):
             padded_targets: N x To
         """
         encoder_padded_outputs, *_ = self.encoder(padded_input, input_lengths)
-        embedding = torch.mean(encoder_padded_outputs, dim=1, keepdim=False)
+        embedding = encoder_padded_outputs[:, -1, :]
         # print('embedding.size(): ' + str(embedding.size()))
 
         return embedding
