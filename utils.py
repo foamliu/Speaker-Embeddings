@@ -76,7 +76,7 @@ def accuracy(scores, targets, k=1):
 
 
 def parse_args():
-    parser = argparse.ArgumentParser(description='Speech Transformer')
+    parser = argparse.ArgumentParser(description='Speaker Embeddings')
     # Training config
     parser.add_argument('--epochs', default=150, type=int, help='Number of maximum epochs')
     parser.add_argument('--lr', default=0.001, type=float, help='learning rate')
@@ -136,12 +136,10 @@ def extract_feature(input_file, feature='fbank', dim=40, cmvn=True, delta=False,
     ws = int(sr * 0.001 * window_size)
     st = int(sr * 0.001 * stride)
     if feature == 'fbank':  # log-scaled
-        feat = librosa.feature.melspectrogram(y=y, sr=sr, n_mels=dim,
-                                              n_fft=ws, hop_length=st)
+        feat = librosa.feature.melspectrogram(y=y, sr=sr, n_mels=dim, n_fft=ws, hop_length=st)
         feat = np.log(feat + 1e-6)
     elif feature == 'mfcc':
-        feat = librosa.feature.mfcc(y=y, sr=sr, n_mfcc=dim, n_mels=26,
-                                    n_fft=ws, hop_length=st)
+        feat = librosa.feature.mfcc(y=y, sr=sr, n_mfcc=dim, n_mels=26, n_fft=ws, hop_length=st)
         feat[0] = librosa.feature.rmse(y, hop_length=st, frame_length=ws)
 
     else:
