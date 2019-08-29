@@ -1,14 +1,13 @@
 import torch.nn as nn
 
 
-class Transformer(nn.Module):
+class SpeakerEmbedding(nn.Module):
     """An encoder-decoder framework only includes attention.
     """
 
-    def __init__(self, encoder, decoder):
-        super(Transformer, self).__init__()
+    def __init__(self, encoder):
+        super(SpeakerEmbedding, self).__init__()
         self.encoder = encoder
-        self.decoder = decoder
 
         for p in self.parameters():
             if p.dim() > 1:

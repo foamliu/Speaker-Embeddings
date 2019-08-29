@@ -2,10 +2,10 @@ import matplotlib.pyplot as plt
 import torch
 
 from config import sos_id, eos_id, vocab_size
-from transformer.decoder import Decoder
-from transformer.encoder import Encoder
-from transformer.optimizer import TransformerOptimizer
-from transformer.transformer import Transformer
+from models.decoder import Decoder
+from models.encoder import Encoder
+from models.optimizer import TransformerOptimizer
+from models.transformer import Transformer
 from utils import parse_args
 
 if __name__ == '__main__':

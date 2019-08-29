@@ -2,9 +2,9 @@ import argparse
 
 import torch
 
-from transformer.decoder import Decoder
-from transformer.encoder import Encoder
-from transformer.transformer import Transformer
+from models.decoder import Decoder
+from models.encoder import Encoder
+from models.transformer import Transformer
 
 if __name__ == "__main__":
     D = 3

@@ -24,10 +24,10 @@ checkpoint = None  # path to checkpoint, None if none
 IGNORE_ID = -1
 sos_id = 0
 eos_id = 1
-num_train = 120098
+num_train = 148642
 num_dev = 14326
-num_test = 7176
-vocab_size = 4336
+
+num_classes = 1211
 
 DATA_DIR = 'data'
 aishell_folder = 'data/data_aishell'

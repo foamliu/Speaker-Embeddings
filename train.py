@@ -1,17 +1,16 @@
 import numpy as np
 import torch
 from tensorboardX import SummaryWriter
-# from torch import nn
+from torch import nn
 from tqdm import tqdm
 
-from config import device, print_freq, vocab_size, sos_id, eos_id
+from config import device, print_freq, grad_clip
 from data_gen import AiShellDataset, pad_collate
-from transformer.decoder import Decoder
-from transformer.encoder import Encoder
-from transformer.loss import cal_performance
-from transformer.optimizer import TransformerOptimizer
-from transformer.transformer import Transformer
-from utils import parse_args, save_checkpoint, AverageMeter, get_logger
+from models.arc_margin import ArcMarginModel
+from models.embedding import SpeakerEmbedding
+from models.encoder import Encoder
+from models.optimizer import TransformerOptimizer
+from utils import parse_args, save_checkpoint, AverageMeter, get_logger, accuracy, clip_gradient
 
 
 def train_net(args):
@@ -29,14 +28,11 @@ def train_net(args):
         encoder = Encoder(args.d_input * args.LFR_m, args.n_layers_enc, args.n_head,
                           args.d_k, args.d_v, args.d_model, args.d_inner,
                           dropout=args.dropout, pe_maxlen=args.pe_maxlen)
-        decoder = Decoder(sos_id, eos_id, vocab_size,
-                          args.d_word_vec, args.n_layers_dec, args.n_head,
-                          args.d_k, args.d_v, args.d_model, args.d_inner,
-                          dropout=args.dropout,
-                          tgt_emb_prj_weight_sharing=args.tgt_emb_prj_weight_sharing,
-                          pe_maxlen=args.pe_maxlen)
-        model = Transformer(encoder, decoder)
-        # print(model)
+        model = SpeakerEmbedding(encoder)
+        metric_fc = ArcMarginModel(args)
+
+        print(model)
+        print(metric_fc)
         # model = nn.DataParallel(model)
 
         # optimizer
@@ -48,6 +44,7 @@ def train_net(args):
         start_epoch = checkpoint['epoch'] + 1
         epochs_since_improvement = checkpoint['epochs_since_improvement']
         model = checkpoint['model']
+        metric_fc = checkpoint['metric_fc']
         optimizer = checkpoint['optimizer']
         optimizer.update_lr(args.lr)
 
@@ -55,6 +52,10 @@ def train_net(args):
 
     # Move to GPU, if available
     model = model.to(device)
+    metric_fc = metric_fc.to(device)
+
+    # Loss function
+    criterion = nn.CrossEntropyLoss().to(device)
 
     # Custom dataloaders
     train_dataset = AiShellDataset(args, 'train')
@@ -69,6 +70,8 @@ def train_net(args):
         # One epoch's training
         train_loss = train(train_loader=train_loader,
                            model=model,
+                           metric_fc=metric_fc,
+                           criterion=criterion,
                            optimizer=optimizer,
                            epoch=epoch,
                            logger=logger)
@@ -96,67 +99,84 @@ def train_net(args):
             epochs_since_improvement = 0
 
         # Save checkpoint
-        save_checkpoint(epoch, epochs_since_improvement, model, optimizer, best_loss, is_best)
+        save_checkpoint(epoch, epochs_since_improvement, model, metric_fc, optimizer, best_loss, is_best)
 
 
-def train(train_loader, model, optimizer, epoch, logger):
+def train(train_loader, model, metric_fc, criterion, optimizer, epoch, logger):
     model.train()  # train mode (dropout and batchnorm is used)
 
     losses = AverageMeter()
+    accs = AverageMeter()
 
     # Batches
     for i, (data) in enumerate(train_loader):
         # Move to GPU, if available
-        padded_input, padded_target, input_lengths = data
+        padded_input, input_lengths, label = data
         padded_input = padded_input.to(device)
-        padded_target = padded_target.to(device)
         input_lengths = input_lengths.to(device)
+        label = label.to(device)
 
         # Forward prop.
-        pred, gold = model(padded_input, input_lengths, padded_target)
-        loss, n_correct = cal_performance(pred, gold, smoothing=args.label_smoothing)
+        feature = model(padded_input, input_lengths)  # embedding => [N, 512]
+        output = metric_fc(feature, label)  # class_id_out => [N, 10575]
+
+        # Calculate loss
+        loss = criterion(output, label)
 
         # Back prop.
         optimizer.zero_grad()
         loss.backward()
+
+        # Clip gradients
+        clip_gradient(optimizer, grad_clip)
 
         # Update weights
         optimizer.step()
 
         # Keep track of metrics
         losses.update(loss.item())
+        top1_accuracy = accuracy(output, label, 1)
+        accs.update(top1_accuracy)
 
         # Print status
         if i % print_freq == 0:
             logger.info('Epoch: [{0}][{1}/{2}]\t'
-                        'Loss {loss.val:.5f} ({loss.avg:.5f})'.format(epoch, i, len(train_loader), loss=losses))
+                        'Loss {loss.val:.5f} ({loss.avg:.5f})\t'
+                        'Accuracy {accs.val:.3f} ({accs.avg:.3f})'.format(epoch, i, len(train_loader), loss=losses,
+                                                                          accs=accs))
 
     return losses.avg
 
 
-def valid(valid_loader, model, logger):
+def valid(valid_loader, model, metric_fc, criterion, logger):
     model.eval()
 
     losses = AverageMeter()
+    accs = AverageMeter()
 
     # Batches
     for data in tqdm(valid_loader):
         # Move to GPU, if available
-        padded_input, padded_target, input_lengths = data
+        padded_input, input_lengths, label = data
         padded_input = padded_input.to(device)
-        padded_target = padded_target.to(device)
         input_lengths = input_lengths.to(device)
+        label = label.to(device)
 
+        # Forward prop.
         with torch.no_grad():
-            # Forward prop.
-            pred, gold = model(padded_input, input_lengths, padded_target)
-            loss, n_correct = cal_performance(pred, gold, smoothing=args.label_smoothing)
+            feature = model(padded_input, input_lengths)  # embedding => [N, 512]
+            output = metric_fc(feature, label)  # class_id_out => [N, 10575]
+
+        # Calculate loss
+        loss = criterion(output, label)
 
         # Keep track of metrics
         losses.update(loss.item())
+        top1_accuracy = accuracy(output, label, 1)
+        accs.update(top1_accuracy)
 
     # Print status
-    logger.info('\nValidation Loss {loss.val:.5f} ({loss.avg:.5f})\n'.format(loss=losses))
+    logger.info('\nValidation Loss {loss.avg:.5f}\tAccuracy {accs.avg:.3f}\n'.format(loss=losses, accs=accs))
 
     return losses.avg
 
