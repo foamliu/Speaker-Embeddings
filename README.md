@@ -8,6 +8,11 @@ This is a PyTorch implementation of a self-attentive speaker embedding.
 
 VoxCeleb1 contains over 100,000 utterances for 1,251 celebrities, extracted from videos uploaded to YouTube. 
 
+| |dev|test|
+|---|---|---|
+|# of speakers|1,211|40|
+|# of utterances|148,642|4,874|
+
 ## Dependency
 
 - Python 3.5.2
