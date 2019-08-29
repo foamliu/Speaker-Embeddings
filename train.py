@@ -5,7 +5,7 @@ from torch import nn
 from tqdm import tqdm
 
 from config import device, print_freq, grad_clip
-from data_gen import AiShellDataset, pad_collate
+from data_gen import VoxCeleb1Dataset, pad_collate
 from models.arc_margin import ArcMarginModel
 from models.embedding import SpeakerEmbedding
 from models.encoder import Encoder
@@ -58,10 +58,10 @@ def train_net(args):
     criterion = nn.CrossEntropyLoss().to(device)
 
     # Custom dataloaders
-    train_dataset = AiShellDataset(args, 'train')
+    train_dataset = VoxCeleb1Dataset(args, 'train')
     train_loader = torch.utils.data.DataLoader(train_dataset, batch_size=args.batch_size, collate_fn=pad_collate,
                                                pin_memory=True, shuffle=True, num_workers=args.num_workers)
-    valid_dataset = AiShellDataset(args, 'dev')
+    valid_dataset = VoxCeleb1Dataset(args, 'dev')
     valid_loader = torch.utils.data.DataLoader(valid_dataset, batch_size=args.batch_size, collate_fn=pad_collate,
                                                pin_memory=True, shuffle=False, num_workers=args.num_workers)
 

@@ -61,7 +61,7 @@ def build_LFR_features(inputs, m, n):
     return np.vstack(LFR_inputs)
 
 
-class AiShellDataset(Dataset):
+class VoxCeleb1Dataset(Dataset):
     def __init__(self, args, split):
         self.args = args
         with open(pickle_file, 'rb') as file:
@@ -90,28 +90,9 @@ if __name__ == "__main__":
     from tqdm import tqdm
 
     args = parse_args()
-    train_dataset = AiShellDataset(args, 'train')
+    train_dataset = VoxCeleb1Dataset(args, 'train')
     train_loader = torch.utils.data.DataLoader(train_dataset, batch_size=32, shuffle=True, num_workers=args.num_workers,
                                                collate_fn=pad_collate)
-    #
-    # print(len(train_dataset))
-    # print(len(train_loader))
-    #
-    # feature = train_dataset[10][0]
-    # print(feature.shape)
-    #
-    # trn = train_dataset[10][1]
-    # print(trn)
-    #
-    # with open(pickle_file, 'rb') as file:
-    #     data = pickle.load(file)
-    # IVOCAB = data['IVOCAB']
-    #
-    # print([IVOCAB[idx] for idx in trn])
-    #
-    # for data in train_loader:
-    #     print(data)
-    #     break
 
     max_len = 0
 
