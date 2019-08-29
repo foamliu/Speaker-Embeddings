@@ -131,6 +131,8 @@ def parse_args():
     parser.add_argument('--num-workers', default=4, type=int,
                         help='Number of workers to generate minibatch')
     # optimizer
+    parser.add_argument('--margin-m', type=float, default=0.5, help='angular margin m')
+    parser.add_argument('--margin-s', type=float, default=64.0, help='feature scale s')
     parser.add_argument('--lr', default=0.001, type=float,
                         help='learning rate')
     parser.add_argument('--k', default=0.2, type=float,
