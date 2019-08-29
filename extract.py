@@ -1,14 +1,13 @@
-import os
-import tarfile
+import zipfile
 
 
 def extract(filename):
     print('Extracting {}...'.format(filename))
-    tar = tarfile.open(filename, 'r')
+    tar = zipfile.ZipFile(filename, 'r')
     tar.extractall('data')
     tar.close()
 
 
 if __name__ == "__main__":
-    if not os.path.isdir('data/data_aishell'):
-        extract('data/data_aishell.tgz')
+    extract('data/vox1_dev_wav.zip')
+    extract('data/vox1_test_wav.zip')

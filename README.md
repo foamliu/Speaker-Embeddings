@@ -13,6 +13,18 @@ VoxCeleb1 contains over 100,000 utterances for 1,251 celebrities, extracted from
 |# of speakers|1,211|40|
 |# of utterances|148,642|4,874|
 
+Download following files into "data" folder:
+- vox1_dev_wav_partaa  
+- vox1_dev_wav_partab  
+- vox1_dev_wav_partac  
+- vox1_dev_wav_partad  
+- vox1_test_wav.zip
+
+Then concatenate the files using the command:
+```bash
+$ cat vox1_dev* > vox1_dev_wav.zip
+```
+
 ## Dependency
 
 - Python 3.5.2
