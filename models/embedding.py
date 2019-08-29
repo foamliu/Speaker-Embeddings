@@ -13,7 +13,7 @@ class SpeakerEmbedding(nn.Module):
             if p.dim() > 1:
                 nn.init.xavier_uniform_(p)
 
-    def forward(self, padded_input, input_lengths, padded_target):
+    def forward(self, padded_input, input_lengths):
         """
         Args:
             padded_input: N x Ti x D
@@ -21,10 +21,10 @@ class SpeakerEmbedding(nn.Module):
             padded_targets: N x To
         """
         encoder_padded_outputs, *_ = self.encoder(padded_input, input_lengths)
-        # pred is score before softmax
-        pred, gold, *_ = self.decoder(padded_target, encoder_padded_outputs,
-                                      input_lengths)
-        return pred, gold
+        embedding = encoder_padded_outputs
+        print('embedding.size(): ' + str(embedding.size()))
+
+        return embedding
 
     def recognize(self, input, input_length, char_list, args):
         """Sequence-to-Sequence beam search, decode one utterence now.
