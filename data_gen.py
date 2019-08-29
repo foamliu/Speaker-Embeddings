@@ -4,27 +4,25 @@ import numpy as np
 from torch.utils.data import Dataset
 from torch.utils.data.dataloader import default_collate
 
-from config import pickle_file, IGNORE_ID
+from config import data_file
 from utils import extract_feature
 
 
 def pad_collate(batch):
     max_input_len = float('-inf')
-    max_target_len = float('-inf')
 
     for elem in batch:
-        feature, trn = elem
+        feature, label = elem
         max_input_len = max_input_len if max_input_len > feature.shape[0] else feature.shape[0]
-        max_target_len = max_target_len if max_target_len > len(trn) else len(trn)
 
     for i, elem in enumerate(batch):
-        feature, trn = elem
+        feature, label = elem
         input_length = feature.shape[0]
         input_dim = feature.shape[1]
         padded_input = np.zeros((max_input_len, input_dim), dtype=np.float32)
         padded_input[:input_length, :] = feature
-        padded_target = np.pad(trn, (0, max_target_len - len(trn)), 'constant', constant_values=IGNORE_ID)
-        batch[i] = (padded_input, padded_target, input_length)
+
+        batch[i] = (padded_input, input_length, label)
 
     # sort it by input lengths (long to short)
     batch.sort(key=lambda x: x[2], reverse=True)
@@ -64,7 +62,7 @@ def build_LFR_features(inputs, m, n):
 class VoxCeleb1Dataset(Dataset):
     def __init__(self, args, split):
         self.args = args
-        with open(pickle_file, 'rb') as file:
+        with open(data_file, 'rb') as file:
             data = pickle.load(file)
 
         self.samples = data[split]
@@ -72,13 +70,13 @@ class VoxCeleb1Dataset(Dataset):
 
     def __getitem__(self, i):
         sample = self.samples[i]
-        wave = sample['wave']
-        trn = sample['trn']
+        wave = sample['audiopath']
+        label = sample['label']
 
         feature = extract_feature(input_file=wave, feature='fbank', dim=self.args.d_input, cmvn=True)
         feature = build_LFR_features(feature, m=self.args.LFR_m, n=self.args.LFR_n)
 
-        return feature, trn
+        return feature, label
 
     def __len__(self):
         return len(self.samples)
