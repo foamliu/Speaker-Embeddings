@@ -23,6 +23,6 @@ class SpeakerEmbedding(nn.Module):
         """
         encoder_padded_outputs, *_ = self.encoder(padded_input, input_lengths)
         embedding = torch.mean(encoder_padded_outputs, dim=1, keepdim=False)
-        print('embedding.size(): ' + str(embedding.size()))
+        # print('embedding.size(): ' + str(embedding.size()))
 
         return embedding
