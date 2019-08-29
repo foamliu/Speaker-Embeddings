@@ -34,8 +34,8 @@ def train_net(args):
         print(model)
         print(metric_fc)
         # model = nn.DataParallel(model)
-        total_params = sum(p.numel() for p in metric_fc.parameters())
-        trainable_params = sum(p.numel() for p in metric_fc.parameters() if p.requires_grad)
+        total_params = sum(p.numel() for p in model.parameters())
+        trainable_params = sum(p.numel() for p in model.parameters() if p.requires_grad)
 
         print('total params: ' + str(total_params))
         print('trainable params: ' + str(trainable_params))
