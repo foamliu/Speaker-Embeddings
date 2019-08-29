@@ -30,7 +30,6 @@ num_dev = 14326
 num_classes = 1211
 
 DATA_DIR = 'data'
-aishell_folder = 'data/data_aishell'
-wav_folder = 'data/wav'
-tran_file = os.path.join(aishell_folder, 'transcript/aishell_transcript_v0.8.txt')
-pickle_file = 'data/aishell.pickle'
+vox1_folder = 'data/vox1'
+wav_folder = os.path.join(vox1_folder, 'wav')
+data_file = 'data/vox1.pickle'
