@@ -89,15 +89,3 @@ Pick 10 random test examples from test set:
 ```bash
 $ python demo.py
 ```
-|Audio|Out|GT|
-|---|---|---|
-|[audio_0.wav](https://github.com/foamliu/Speech-Transformer/raw/master/audios/audio_0.wav)|$(out_list_0)|$(gt_0)|
-|[audio_1.wav](https://github.com/foamliu/Speech-Transformer/raw/master/audios/audio_1.wav)|$(out_list_1)|$(gt_1)|
-|[audio_2.wav](https://github.com/foamliu/Speech-Transformer/raw/master/audios/audio_2.wav)|$(out_list_2)|$(gt_2)|
-|[audio_3.wav](https://github.com/foamliu/Speech-Transformer/raw/master/audios/audio_3.wav)|$(out_list_3)|$(gt_3)|
-|[audio_4.wav](https://github.com/foamliu/Speech-Transformer/raw/master/audios/audio_4.wav)|$(out_list_4)|$(gt_4)|
-|[audio_5.wav](https://github.com/foamliu/Speech-Transformer/raw/master/audios/audio_5.wav)|$(out_list_5)|$(gt_5)|
-|[audio_6.wav](https://github.com/foamliu/Speech-Transformer/raw/master/audios/audio_6.wav)|$(out_list_6)|$(gt_6)|
-|[audio_7.wav](https://github.com/foamliu/Speech-Transformer/raw/master/audios/audio_7.wav)|$(out_list_7)|$(gt_7)|
-|[audio_8.wav](https://github.com/foamliu/Speech-Transformer/raw/master/audios/audio_8.wav)|$(out_list_8)|$(gt_8)|
-|[audio_9.wav](https://github.com/foamliu/Speech-Transformer/raw/master/audios/audio_9.wav)|$(out_list_9)|$(gt_9)|
