@@ -27,7 +27,7 @@ eos_id = 1
 num_train = 148642
 num_dev = 14326
 
-num_classes = 1211
+num_classes = 1251
 
 DATA_DIR = 'data'
 vox1_folder = 'data/vox1'
