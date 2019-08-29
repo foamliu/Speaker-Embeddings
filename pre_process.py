@@ -10,11 +10,10 @@ def get_data():
 
     dirs = [d for d in os.listdir(wav_folder) if d.startswith('id')]
 
-    classes = []
     samples = []
 
     for id in dirs:
-        classes.append(id)
+        label = build_dict(id)
         folder = os.path.join(wav_folder, id)
         sub_folders = [s for s in os.listdir(folder)]
         for sub in sub_folders:
@@ -22,28 +21,27 @@ def get_data():
             files = [f for f in os.listdir(sub_folder) if f.endswith('.wav')]
             for f in files:
                 audiopath = os.path.join(sub_folder, f)
-                build_dict(audiopath)
-                label = audiopath_to_label[audiopath]
                 samples.append({'audiopath': audiopath, 'label': label})
 
     print('num_files: {}'.format(len(samples)))
-    return samples, classes
+    return samples
 
 
-def build_dict(audiopath):
-    global audiopath_to_label
-    if not audiopath in audiopath_to_label:
-        next_index = len(audiopath_to_label)
-        audiopath_to_label[audiopath] = next_index
+def build_dict(id):
+    global id_to_label
+    if not id in id_to_label:
+        next_index = len(id_to_label)
+        id_to_label[id] = next_index
+    return id_to_label[id]
 
 
 if __name__ == "__main__":
-    audiopath_to_label = {}
+    id_to_label = {}
 
-    samples, classes = get_data()
+    samples = get_data()
 
     data = dict()
-    data['audiopath_to_label'] = audiopath_to_label
+    data['id_to_label'] = id_to_label
 
     num_valid = 1000
     valid = random.sample(samples, num_valid)
@@ -57,6 +55,6 @@ if __name__ == "__main__":
 
     print('num_train: ' + str(len(data['train'])))
     print('num_valid: ' + str(len(data['valid'])))
-    print('num_classes: ' + str(len(classes)))
+    print('num_classes: ' + str(len(id_to_label)))
 
     print(samples[:10])
