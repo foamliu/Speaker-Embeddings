@@ -9,7 +9,6 @@ from data_gen import VoxCeleb1Dataset, pad_collate
 from models.arc_margin import ArcMarginModel
 from models.embedding import SpeakerEmbedding
 from models.encoder import Encoder
-from models.optimizer import TransformerOptimizer
 from utils import parse_args, save_checkpoint, AverageMeter, get_logger, accuracy, clip_gradient
 
 
