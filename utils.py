@@ -78,7 +78,7 @@ def accuracy(scores, targets, k=1):
 def parse_args():
     parser = argparse.ArgumentParser(description='Speaker Embeddings')
     # Training config
-    parser.add_argument('--epochs', default=150, type=int, help='Number of maximum epochs')
+    parser.add_argument('--epochs', default=1000, type=int, help='Number of maximum epochs')
     parser.add_argument('--lr', default=0.001, type=float, help='learning rate')
     parser.add_argument('--batch-size', default=64, type=int, help='Batch size')
     parser.add_argument('--num-workers', default=4, type=int, help='Number of workers to generate minibatch')
