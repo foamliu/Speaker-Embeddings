@@ -5,14 +5,14 @@ import torch.nn.functional as F
 from torch import nn
 from torch.nn import Parameter
 
-from config import device, num_classes
+from config import device, num_classes, token_emb_size
 
 
 class ArcMarginModel(nn.Module):
     def __init__(self, args):
         super(ArcMarginModel, self).__init__()
 
-        self.weight = Parameter(torch.FloatTensor(num_classes, args.emb_size))
+        self.weight = Parameter(torch.FloatTensor(num_classes, token_emb_size))
         nn.init.xavier_uniform_(self.weight)
 
         self.easy_margin = args.easy_margin
