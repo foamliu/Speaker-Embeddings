@@ -46,7 +46,6 @@ def train_net(args):
         model = checkpoint['model']
         metric_fc = checkpoint['metric_fc']
         optimizer = checkpoint['optimizer']
-        optimizer.update_lr(args.lr)
 
     logger = get_logger()
 
