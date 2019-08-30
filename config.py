@@ -17,7 +17,7 @@ ref_enc_filters = [32, 32, 64, 64, 128, 128]
 
 # Style token layer
 token_num = 10
-token_emb_size = 512
+token_emb_size = 256
 num_heads = 8
 
 # Training parameters
