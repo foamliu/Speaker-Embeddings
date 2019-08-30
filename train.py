@@ -179,7 +179,7 @@ def valid(valid_loader, model, metric_fc, criterion, logger):
         accs.update(top1_accuracy)
 
     # Print status
-    logger.info('\nValidation Loss {loss.avg:.5f}\tAccuracy {accs.avg:.3f}\n'.format(loss=losses, accs=accs))
+    logger.info('Validation\t Loss {loss.avg:.5f}\tAccuracy {accs.avg:.3f}\n'.format(loss=losses, accs=accs))
 
     return losses.avg, accs.avg
 
