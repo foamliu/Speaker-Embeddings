@@ -81,5 +81,6 @@ class ScaledDotProductAttention(nn.Module):
         attn = self.dropout(attn)
         print('attn.size(): ' + str(attn.size()))
         output = torch.bmm(attn, v)
+        print('output.size(): ' + str(output.size()))
 
         return output, attn
