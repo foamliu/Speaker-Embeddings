@@ -5,7 +5,7 @@ from torch.utils.data import Dataset
 from torch.utils.data.dataloader import default_collate
 
 import config as hp
-from utils import extract_feature
+from utils import extract_feature, build_LFR_features
 
 
 def pad_collate(batch):
@@ -45,6 +45,7 @@ class VoxCeleb1Dataset(Dataset):
         label = sample['label']
 
         feature = extract_feature(input_file=wave, feature='fbank', dim=hp.n_mels, cmvn=True)
+        feature = build_LFR_features(feature, m=hp.LFR_m, n=hp.LFR_n)
 
         return feature, label
 

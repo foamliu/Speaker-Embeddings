@@ -7,7 +7,7 @@ from tqdm import tqdm
 from config import device, print_freq, grad_clip
 from data_gen import VoxCeleb1Dataset, pad_collate
 from models.arc_margin import ArcMarginModel
-from models.models import GST
+from models.encoder import Encoder
 from utils import parse_args, save_checkpoint, AverageMeter, get_logger, accuracy, clip_gradient
 
 
@@ -23,7 +23,7 @@ def train_net(args):
     # Initialize / load checkpoint
     if checkpoint is None:
         # model
-        model = GST()
+        model = Encoder()
         metric_fc = ArcMarginModel(args)
 
         print(model)
