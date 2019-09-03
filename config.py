@@ -13,14 +13,7 @@ embedding_dim = 512
 cmvn = True  # apply CMVN on feature
 LFR_m = 4
 LFR_n = 3
-
-# Reference encoder
-ref_enc_filters = [32, 32, 64, 64, 128, 128]
-
-# Style token layer
-token_num = 10
-token_emb_size = 256
-num_heads = 8
+num_layer = 3
 
 # Training parameters
 grad_clip = 5.  # clip gradients at an absolute value of
