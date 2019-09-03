@@ -24,6 +24,7 @@ num_heads = 8
 grad_clip = 5.  # clip gradients at an absolute value of
 print_freq = 100  # print training/validation stats  every __ batches
 checkpoint = None  # path to checkpoint, None if none
+sample_rate = 16000  # vox1
 
 # Data parameters
 num_train = 148642

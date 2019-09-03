@@ -4,7 +4,7 @@ import logging
 import librosa
 import numpy as np
 import torch
-
+from config import sample_rate
 
 def clip_gradient(optimizer, grad_clip):
     """
@@ -136,7 +136,7 @@ def pad_list(xs, pad_value):
 #     acoustic features with shape (time step, dim)
 def extract_feature(input_file, feature='fbank', dim=40, cmvn=True, delta=False, delta_delta=False,
                     window_size=25, stride=10, save_feature=None):
-    y, sr = librosa.load(input_file, sr=None)
+    y, sr = librosa.load(input_file, sr=sample_rate)
     ws = int(sr * 0.001 * window_size)
     st = int(sr * 0.001 * stride)
     if feature == 'fbank':  # log-scaled
