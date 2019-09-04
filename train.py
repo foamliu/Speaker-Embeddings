@@ -42,7 +42,8 @@ def train_net(args):
         # optimizer = torch.optim.Adam([{'params': model.parameters()}, {'params': metric_fc.parameters()}], lr=args.lr,
         #                              betas=(0.9, 0.98), eps=1e-09)
         optimizer = EmbedderOptimizer(
-            torch.optim.SGD([{'params': model.parameters()}, {'params': metric_fc.parameters()}], lr=args.lr))
+            torch.optim.SGD([{'params': model.parameters()}, {'params': metric_fc.parameters()}], lr=args.lr,
+                            momentum=args.mom))
 
     else:
         checkpoint = torch.load(checkpoint)
