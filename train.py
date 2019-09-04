@@ -109,6 +109,7 @@ def train_net(args):
 
 def train(train_loader, model, metric_fc, criterion, optimizer, epoch, logger):
     model.train()  # train mode (dropout and batchnorm is used)
+    metric_fc.train()
 
     losses = AverageMeter()
     accs = AverageMeter()
@@ -156,6 +157,7 @@ def train(train_loader, model, metric_fc, criterion, optimizer, epoch, logger):
 
 def valid(valid_loader, model, metric_fc, criterion, logger):
     model.eval()
+    metric_fc.eval()
 
     losses = AverageMeter()
     accs = AverageMeter()
