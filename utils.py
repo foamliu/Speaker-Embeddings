@@ -82,7 +82,7 @@ def parse_args():
     # Training config
     parser.add_argument('--epochs', default=1000, type=int, help='Number of maximum epochs')
     parser.add_argument('--lr', default=0.01, type=float, help='learning rate')
-    parser.add_argument('--batch-size', default=24, type=int, help='Batch size')
+    parser.add_argument('--batch-size', default=16, type=int, help='Batch size')
     parser.add_argument('--num-workers', default=4, type=int, help='Number of workers to generate minibatch')
     # optimizer
     # parser.add_argument('--margin-m', type=float, default=0.5, help='angular margin m')
