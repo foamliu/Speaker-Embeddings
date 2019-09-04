@@ -4,11 +4,12 @@ from tensorboardX import SummaryWriter
 from torch import nn
 from tqdm import tqdm
 
-from config import device, print_freq, grad_clip
+from config import device, print_freq
 from data_gen import VoxCeleb1Dataset, pad_collate
 from models.arc_margin import ArcMarginModel
+from models.optimizer import EmbedderOptimizer
 from models.speech_embedder import SpeechEmbedder
-from utils import parse_args, save_checkpoint, AverageMeter, get_logger, accuracy, clip_gradient
+from utils import parse_args, save_checkpoint, AverageMeter, get_logger, accuracy
 
 
 def train_net(args):
@@ -40,7 +41,8 @@ def train_net(args):
         # optimizer
         # optimizer = torch.optim.Adam([{'params': model.parameters()}, {'params': metric_fc.parameters()}], lr=args.lr,
         #                              betas=(0.9, 0.98), eps=1e-09)
-        optimizer = torch.optim.SGD([{'params': model.parameters()}, {'params': metric_fc.parameters()}], lr=args.lr)
+        optimizer = EmbedderOptimizer(
+            torch.optim.SGD([{'params': model.parameters()}, {'params': metric_fc.parameters()}], lr=args.lr))
 
     else:
         checkpoint = torch.load(checkpoint)
@@ -76,7 +78,8 @@ def train_net(args):
                                       criterion=criterion,
                                       optimizer=optimizer,
                                       epoch=epoch,
-                                      logger=logger)
+                                      logger=logger,
+                                      writer=writer)
         writer.add_scalar('model/train_loss', train_loss, epoch)
         writer.add_scalar('model/train_accuracy', train_acc, epoch)
 
@@ -108,7 +111,7 @@ def train_net(args):
         save_checkpoint(epoch, epochs_since_improvement, model, metric_fc, optimizer, best_loss, is_best)
 
 
-def train(train_loader, model, metric_fc, criterion, optimizer, epoch, logger):
+def train(train_loader, model, metric_fc, criterion, optimizer, epoch, logger, writer):
     model.train()  # train mode (dropout and batchnorm is used)
     metric_fc.train()
 
@@ -136,7 +139,7 @@ def train(train_loader, model, metric_fc, criterion, optimizer, epoch, logger):
         loss.backward()
 
         # Clip gradients
-        clip_gradient(optimizer, grad_clip)
+        # clip_gradient(optimizer, grad_clip)
 
         # Update weights
         optimizer.step()
@@ -152,6 +155,7 @@ def train(train_loader, model, metric_fc, criterion, optimizer, epoch, logger):
                         'Loss {loss.val:.5f} ({loss.avg:.5f})\t'
                         'Accuracy {accs.val:.3f} ({accs.avg:.3f})'.format(epoch, i, len(train_loader), loss=losses,
                                                                           accs=accs))
+            writer.add_scalar('step_num/train_loss', losses.avg, optimizer.step_num)
 
     return losses.avg, accs.avg
 
