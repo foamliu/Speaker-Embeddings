@@ -38,8 +38,7 @@ def train_net(args):
         # optimizer
         # optimizer = torch.optim.Adam([{'params': model.parameters()}, {'params': metric_fc.parameters()}], lr=args.lr,
         #                              betas=(0.9, 0.98), eps=1e-09)
-        optimizer = torch.optim.SGD([{'params': model.parameters()}, {'params': metric_fc.parameters()}],
-                                    lr=args.lr, momentum=args.mom, weight_decay=args.weight_decay)
+        optimizer = torch.optim.SGD([{'params': model.parameters()}, {'params': metric_fc.parameters()}], lr=args.lr)
 
     else:
         checkpoint = torch.load(checkpoint)
