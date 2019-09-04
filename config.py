@@ -8,8 +8,8 @@ device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')  # sets de
 n_mels = 80  # dimension of feature
 window_size = 25  # window size for FFT (ms)
 stride = 10  # window stride for FFT (ms)
-hidden_size = 512
-embedding_dim = 512
+hidden_size = 768
+embedding_dim = 256
 cmvn = True  # apply CMVN on feature
 LFR_m = 4
 LFR_n = 3
@@ -17,7 +17,7 @@ num_layer = 3
 
 # Training parameters
 grad_clip = 5.  # clip gradients at an absolute value of
-print_freq = 10  # print training/validation stats  every __ batches
+print_freq = 30  # print training/validation stats  every __ batches
 checkpoint = None  # path to checkpoint, None if none
 sample_rate = 16000  # vox1
 
