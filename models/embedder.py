@@ -39,14 +39,14 @@ class ReferenceEncoder(nn.Module):
         self.convs = nn.ModuleList(convs)
         self.bns = nn.ModuleList([nn.BatchNorm2d(num_features=hp.ref_enc_filters[i]) for i in range(K)])
 
-        out_channels = self.calculate_channels(hp.n_mel_channels, 3, 2, 1, K)
+        out_channels = self.calculate_channels(hp.n_mels, 3, 2, 1, K)
         self.gru = nn.GRU(input_size=hp.ref_enc_filters[-1] * out_channels,
                           hidden_size=hp.token_emb_size // 2,
                           batch_first=True)
 
     def forward(self, inputs):
         N = inputs.size(0)
-        out = inputs.view(N, 1, -1, hp.n_mel_channels)  # [N, 1, Ty, n_mels]
+        out = inputs.view(N, 1, -1, hp.n_mels)  # [N, 1, Ty, n_mels]
         for conv, bn in zip(self.convs, self.bns):
             out = conv(out)
             out = bn(out)
