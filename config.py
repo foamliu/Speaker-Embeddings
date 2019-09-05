@@ -11,7 +11,7 @@ stride = 10  # window stride for FFT (ms)
 hidden_size = 512
 embedding_dim = 512
 cmvn = True  # apply CMVN on feature
-LFR_m = 1  # change to 4 if use LFR
+LFR_m = 4  # change to 4 if use LFR
 LFR_n = 3
 
 # Reference encoder
