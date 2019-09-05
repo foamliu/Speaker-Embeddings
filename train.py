@@ -6,8 +6,9 @@ from tqdm import tqdm
 
 from config import device, print_freq
 from data_gen import VoxCeleb1Dataset, pad_collate
+from models.arc_margin import ArcMarginModel
+from models.embedder import GST
 from models.optimizer import EmbedderOptimizer
-from models.speech_embedder import DeepSpeakerModel
 from utils import parse_args, save_checkpoint, AverageMeter, get_logger, accuracy
 
 
@@ -23,13 +24,16 @@ def train_net(args):
     # Initialize / load checkpoint
     if checkpoint is None:
         # model
-        model = DeepSpeakerModel(embedding_size=512, num_classes=1251)
+        model = GST()
+        metric_fc = ArcMarginModel(args)
 
         print(model)
         # model = nn.DataParallel(model)
 
         total_params = sum(p.numel() for p in model.parameters())
+        total_params += sum(p.numel() for p in metric_fc.parameters())
         trainable_params = sum(p.numel() for p in model.parameters() if p.requires_grad)
+        trainable_params += sum(p.numel() for p in metric_fc.parameters() if p.requires_grad)
 
         print('total params: ' + str(total_params))
         print('trainable params: ' + str(trainable_params))
@@ -69,6 +73,7 @@ def train_net(args):
         # One epoch's training
         train_loss, train_acc = train(train_loader=train_loader,
                                       model=model,
+                                      metric_fc=metric_fc,
                                       criterion=criterion,
                                       optimizer=optimizer,
                                       epoch=epoch,
@@ -86,6 +91,7 @@ def train_net(args):
         # One epoch's validation
         valid_loss, valid_acc = valid(valid_loader=valid_loader,
                                       model=model,
+                                      metric_fc=metric_fc,
                                       criterion=criterion,
                                       logger=logger)
         writer.add_scalar('model/valid_loss', valid_loss, epoch)
@@ -104,8 +110,9 @@ def train_net(args):
         save_checkpoint(epoch, epochs_since_improvement, model, metric_fc, optimizer, best_loss, is_best)
 
 
-def train(train_loader, model, criterion, optimizer, epoch, logger, writer):
+def train(train_loader, model, metric_fc, criterion, optimizer, epoch, logger, writer):
     model.train()  # train mode (dropout and batchnorm is used)
+    metric_fc.train()
 
     losses = AverageMeter()
     accs = AverageMeter()
@@ -119,7 +126,8 @@ def train(train_loader, model, criterion, optimizer, epoch, logger, writer):
         label = label.to(device)
 
         # Forward prop.
-        output = model.forward_classifier(padded_input)  # embedding => [N, 512]
+        feature = model.forward_classifier(padded_input)  # embedding => [N, 512]
+        output = metric_fc(feature, label)  # class_id_out => [N, 1251]
 
         # Calculate loss
         loss = criterion(output, label)
@@ -151,8 +159,9 @@ def train(train_loader, model, criterion, optimizer, epoch, logger, writer):
     return losses.avg, accs.avg
 
 
-def valid(valid_loader, model, criterion, logger):
+def valid(valid_loader, model, metric_fc, criterion, logger):
     model.eval()
+    metric_fc.eval()
 
     losses = AverageMeter()
     accs = AverageMeter()
@@ -167,7 +176,8 @@ def valid(valid_loader, model, criterion, logger):
 
         # Forward prop.
         with torch.no_grad():
-            output = model.forward_classifier(padded_input)  # embedding => [N, 512]
+            feature = model.forward_classifier(padded_input)  # embedding => [N, 512]
+            output = metric_fc(feature, label)  # class_id_out => [N, 1251]
 
         # Calculate loss
         loss = criterion(output, label)
