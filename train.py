@@ -39,10 +39,9 @@ def train_net(args):
         print('trainable params: ' + str(trainable_params))
 
         # optimizer
-        # optimizer = torch.optim.Adam([{'params': model.parameters()}, {'params': metric_fc.parameters()}], lr=args.lr,
-        #                              betas=(0.9, 0.98), eps=1e-09)
         optimizer = EmbedderOptimizer(
-            torch.optim.SGD(model.parameters(), lr=args.lr, momentum=args.mom))
+            torch.optim.Adam([{'params': model.parameters()}, {'params': metric_fc.parameters()}], lr=args.lr,
+                             weight_decay=args.l2, betas=(0.9, 0.999), eps=1e-6))
 
     else:
         checkpoint = torch.load(checkpoint)
