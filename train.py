@@ -126,7 +126,7 @@ def train(train_loader, model, metric_fc, criterion, optimizer, epoch, logger, w
         label = label.to(device)
 
         # Forward prop.
-        feature = model.forward_classifier(padded_input)  # embedding => [N, 512]
+        feature = model(padded_input)  # embedding => [N, 512]
         output = metric_fc(feature, label)  # class_id_out => [N, 1251]
 
         # Calculate loss
@@ -176,7 +176,7 @@ def valid(valid_loader, model, metric_fc, criterion, logger):
 
         # Forward prop.
         with torch.no_grad():
-            feature = model.forward_classifier(padded_input)  # embedding => [N, 512]
+            feature = model(padded_input)  # embedding => [N, 512]
             output = metric_fc(feature, label)  # class_id_out => [N, 1251]
 
         # Calculate loss
