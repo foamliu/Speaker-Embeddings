@@ -90,7 +90,7 @@ def parse_args():
     parser.add_argument('--margin-s', type=float, default=10.0, help='feature scale s')
     parser.add_argument('--emb-size', type=int, default=512, help='embedding length')
     parser.add_argument('--easy-margin', type=bool, default=False, help='easy margin')
-    parser.add_argument('--weight-decay', type=float, default=5e-4, help='weight decay')
+    parser.add_argument('--weight-decay', type=float, default=0.0, help='weight decay')
     parser.add_argument('--mom', type=float, default=0.9, help='momentum')
 
     parser.add_argument('--checkpoint', type=str, default=None, help='checkpoint')
