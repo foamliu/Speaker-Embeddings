@@ -37,10 +37,8 @@ if __name__ == '__main__':
             feature = build_LFR_features(feature, m=hp.LFR_m, n=hp.LFR_n)
             padded_input = torch.unsqueeze(torch.from_numpy(feature), dim=0)
             padded_input = padded_input.to(hp.device)
-            feature = model(padded_input)
-            print(feature.size())
-            feature = feature.cpu().numpy()[0]
-            print(feature.shape)
+            feature = model(padded_input)[0][0]
+            feature = feature.cpu().numpy()
             embeddings[i] = np.linalg.norm(feature)
             labels.append(label)
 
