@@ -31,7 +31,7 @@ if __name__ == '__main__':
         padded_input = torch.unsqueeze(torch.from_numpy(feature), dim=0)
         padded_input = padded_input.to(hp.device)
         feature = model(padded_input)
-        feature = feature.cpu.numpy()
+        feature = feature.cpu().numpy()
         embeddings[i] = feature
 
     tsne = TSNE(perplexity=30, n_components=2, init='pca', n_iter=5000)
