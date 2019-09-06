@@ -25,7 +25,6 @@ class ArcMarginModel(nn.Module):
         self.mm = math.sin(math.pi - self.m) * self.m
 
     def forward(self, input, label):
-        input = torch.squeeze(input, dim=1)
         x = F.normalize(input)
         W = F.normalize(self.weight)
         cosine = F.linear(x, W)

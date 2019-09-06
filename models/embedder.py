@@ -16,7 +16,7 @@ class GST(nn.Module):
     def forward(self, inputs):
         enc_out = self.encoder(inputs)
         style_embed = self.stl(enc_out)
-
+        style_embed = torch.squeeze(style_embed, dim=1)
         return style_embed
 
 

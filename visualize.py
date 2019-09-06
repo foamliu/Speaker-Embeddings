@@ -1,7 +1,7 @@
 import pickle
 
 import matplotlib
-
+import torch.nn.functional as F
 matplotlib.use('tkagg')
 import matplotlib.pyplot as plt
 import numpy as np
@@ -33,13 +33,14 @@ if __name__ == '__main__':
             sample = samples[i]
             wave = sample['audiopath']
             label = sample['label']
-            feature = extract_feature(input_file=wave, feature='fbank', dim=hp.n_mels, cmvn=True)
-            feature = build_LFR_features(feature, m=hp.LFR_m, n=hp.LFR_n)
-            padded_input = torch.unsqueeze(torch.from_numpy(feature), dim=0)
-            padded_input = padded_input.to(hp.device)
-            feature = model(padded_input)[0][0]
+            mel = extract_feature(input_file=wave, feature='fbank', dim=hp.n_mels, cmvn=True)
+            mel = build_LFR_features(mel, m=hp.LFR_m, n=hp.LFR_n)
+            mel = torch.unsqueeze(torch.from_numpy(mel), dim=0)
+            mel = mel.to(hp.device)
+            feature = model(mel)[0]
+            feature = F.normalize(feature)
             feature = feature.cpu().numpy()
-            embeddings[i] = feature / np.linalg.norm(feature)
+            embeddings[i] = feature
             labels.append(label)
     print(labels)
 
