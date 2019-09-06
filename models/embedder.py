@@ -132,3 +132,10 @@ class MultiHeadAttention(nn.Module):
         out = torch.cat(torch.split(out, 1, dim=0), dim=3).squeeze(0)  # [N, T_q, num_units]
 
         return out
+
+
+if __name__ == "__main__":
+    from torchsummary import summary
+
+    model = GST()
+    summary(model, (500, 320))
