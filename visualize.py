@@ -39,7 +39,7 @@ if __name__ == '__main__':
             padded_input = padded_input.to(hp.device)
             feature = model(padded_input)[0][0]
             feature = feature.cpu().numpy()
-            embeddings[i] = np.linalg.norm(feature)
+            embeddings[i] = feature
             labels.append(label)
 
     print('t-SNE: fitting transform...')
