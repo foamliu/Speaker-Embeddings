@@ -23,16 +23,17 @@ if __name__ == '__main__':
 
     embeddings = np.zeros((1000, 512), dtype=np.float)
     dots = []
-    for i, sample in tqdm(enumerate(samples)):
-        wave = sample['audiopath']
-        label = sample['label']
-        feature = extract_feature(input_file=wave, feature='fbank', dim=hp.n_mels, cmvn=True)
-        feature = build_LFR_features(feature, m=hp.LFR_m, n=hp.LFR_n)
-        padded_input = torch.unsqueeze(torch.from_numpy(feature), dim=0)
-        padded_input = padded_input.to(hp.device)
-        feature = model(padded_input)
-        feature = feature.cpu().numpy()
-        embeddings[i] = feature
+    with torch.no_grad():
+        for i, sample in tqdm(enumerate(samples)):
+            wave = sample['audiopath']
+            label = sample['label']
+            feature = extract_feature(input_file=wave, feature='fbank', dim=hp.n_mels, cmvn=True)
+            feature = build_LFR_features(feature, m=hp.LFR_m, n=hp.LFR_n)
+            padded_input = torch.unsqueeze(torch.from_numpy(feature), dim=0)
+            padded_input = padded_input.to(hp.device)
+            feature = model(padded_input)
+            feature = feature.cpu().numpy()
+            embeddings[i] = feature
 
     tsne = TSNE(perplexity=30, n_components=2, init='pca', n_iter=5000)
     two_d_embeddings = tsne.fit_transform(embeddings)
