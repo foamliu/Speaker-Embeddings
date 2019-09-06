@@ -39,6 +39,7 @@ if __name__ == '__main__':
             embeddings[i] = feature
             labels.append(label)
 
+    print('t-SNE: fitting transform...')
     tsne = TSNE(perplexity=30, n_components=2, init='pca', n_iter=5000)
     two_d_embeddings = tsne.fit_transform(embeddings)
 
