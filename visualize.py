@@ -23,6 +23,7 @@ if __name__ == '__main__':
 
     embeddings = np.zeros((1000, 512), dtype=np.float)
     dots = []
+    labels = []
     with torch.no_grad():
         for i in tqdm(range(len(samples))):
             sample = samples[i]
@@ -35,6 +36,7 @@ if __name__ == '__main__':
             feature = model(padded_input)
             feature = feature.cpu().numpy()
             embeddings[i] = feature
+            labels.append(label)
 
     tsne = TSNE(perplexity=30, n_components=2, init='pca', n_iter=5000)
     two_d_embeddings = tsne.fit_transform(embeddings)
