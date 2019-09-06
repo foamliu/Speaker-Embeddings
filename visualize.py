@@ -1,5 +1,6 @@
 import pickle
 
+import matplotlib.pyplot as plt
 import numpy as np
 import torch
 from sklearn.manifold import TSNE
@@ -40,4 +41,11 @@ if __name__ == '__main__':
 
     tsne = TSNE(perplexity=30, n_components=2, init='pca', n_iter=5000)
     two_d_embeddings = tsne.fit_transform(embeddings)
-    print(two_d_embeddings)
+
+    x = []
+    y = []
+    for i in range(1000):
+        x.append(two_d_embeddings[i][0])
+        y.append(two_d_embeddings[i][1])
+    plt.scatter(x, y, c=labels, alpha=0.5)
+    plt.show()
