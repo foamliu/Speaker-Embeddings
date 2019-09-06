@@ -41,6 +41,7 @@ if __name__ == '__main__':
             feature = feature.cpu().numpy()
             embeddings[i] = feature / np.linalg.norm(feature)
             labels.append(label)
+    print(labels)
 
     print('t-SNE: fitting transform...')
     tsne = TSNE(perplexity=30, n_components=2, init='pca', n_iter=5000)
