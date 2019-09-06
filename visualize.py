@@ -24,7 +24,8 @@ if __name__ == '__main__':
     embeddings = np.zeros((1000, 512), dtype=np.float)
     dots = []
     with torch.no_grad():
-        for i, sample in tqdm(enumerate(samples)):
+        for i in tqdm(range(len(samples))):
+            sample = samples[i]
             wave = sample['audiopath']
             label = sample['label']
             feature = extract_feature(input_file=wave, feature='fbank', dim=hp.n_mels, cmvn=True)
