@@ -52,4 +52,5 @@ if __name__ == '__main__':
         x.append(two_d_embeddings[i][0])
         y.append(two_d_embeddings[i][1])
     plt.scatter(x, y, c=labels, cmap='hsv')
+    plt.annotate(labels, xy=(x, y), xytext=(5, 2), textcoords='offset points', ha='right', va='bottom')
     plt.show()
