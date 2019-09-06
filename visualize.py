@@ -38,6 +38,7 @@ if __name__ == '__main__':
             padded_input = torch.unsqueeze(torch.from_numpy(feature), dim=0)
             padded_input = padded_input.to(hp.device)
             feature = model(padded_input)
+            print(feature.size())
             feature = feature.cpu().numpy()[0]
             print(feature.shape)
             embeddings[i] = np.linalg.norm(feature)
