@@ -1,6 +1,9 @@
 import pickle
 
+import numpy as np
 import torch
+from sklearn.manifold import TSNE
+from tqdm import tqdm
 
 import config as hp
 from models.embedder import GST
@@ -18,7 +21,9 @@ if __name__ == '__main__':
         data = pickle.load(file)
     samples = data['valid']
 
-    for sample in samples:
+    embeddings = np.zeros((1000, 512), dtype=np.float)
+    dots = []
+    for i, sample in tqdm(enumerate(samples)):
         wave = sample['audiopath']
         label = sample['label']
         feature = extract_feature(input_file=wave, feature='fbank', dim=hp.n_mels, cmvn=True)
@@ -26,4 +31,9 @@ if __name__ == '__main__':
         padded_input = torch.unsqueeze(torch.from_numpy(feature), dim=0)
         padded_input = padded_input.to(hp.device)
         feature = model(padded_input)
-        print(feature)
+        feature = feature.cpu.numpy()
+        embeddings[i] = feature
+
+    tsne = TSNE(perplexity=30, n_components=2, init='pca', n_iter=5000)
+    two_d_embeddings = tsne.fit_transform(embeddings)
+    print(two_d_embeddings)
