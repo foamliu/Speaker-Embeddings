@@ -51,5 +51,5 @@ if __name__ == '__main__':
     for i in range(1000):
         x.append(two_d_embeddings[i][0])
         y.append(two_d_embeddings[i][1])
-    plt.scatter(x, y, c=labels, alpha=0.5)
+    plt.scatter(x, y, c=labels, cmap='hsv')
     plt.show()
