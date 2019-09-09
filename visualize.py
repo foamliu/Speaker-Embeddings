@@ -5,7 +5,7 @@ import matplotlib as mpl
 from matplotlib import pylab
 
 matplotlib.use('tkagg')
-import matplotlib.pyplot as plt
+# import matplotlib.pyplot as plt
 import numpy as np
 import torch
 from sklearn.manifold import TSNE
@@ -42,9 +42,9 @@ def get_cmap():
         'Custom cmap', cmaplist, cmap.N)
 
     # define the bins and normalize
-    bounds = np.linspace(0, 20, 21)
+    bounds = np.linspace(0, 10, 11)
     norm = mpl.colors.BoundaryNorm(bounds, cmap.N)
-    return cmap
+    return cmap, norm
 
 
 if __name__ == '__main__':
@@ -98,11 +98,12 @@ if __name__ == '__main__':
     tsne = TSNE(perplexity=30, n_components=2, init='pca', n_iter=5000)
     two_d_embeddings = tsne.fit_transform(embeddings)
 
-    cmap = get_cmap()
+    cmap, norm = get_cmap()
 
+    fig, ax = pylab.subplots(1, 1, figsize=(6, 6))  # setup the plot
     pylab.figure(figsize=(15, 15))
     for i, label in enumerate(labels):
         x, y = two_d_embeddings[i, :]
-        pylab.scatter(x, y, c=label, cmap=cmap)
+        pylab.scatter(x, y, c=label, cmap=cmap, norm=norm)
         # pylab.annotate(label, xy=(x, y), xytext=(5, 2), textcoords='offset points', ha='right', va='bottom')
-    plt.show()
+    pylab.show()
