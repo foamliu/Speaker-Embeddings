@@ -56,7 +56,7 @@ if __name__ == '__main__':
     model.eval()
 
     dirs = [d for d in os.listdir(wav_folder) if d.startswith('id')]
-    dirs = random.sample(dirs, 10)
+    dirs = random.sample(dirs, 20)
 
     samples = []
     id_to_label = {}
@@ -101,11 +101,5 @@ if __name__ == '__main__':
     cmap, norm = get_cmap()
 
     pylab.figure(figsize=(15, 15))
-    # for i, label in enumerate(labels):
-    #     x, y = two_d_embeddings[i, :]
-    #     print(x)
-    #     print(y)
-    #     print(label)
     pylab.scatter(two_d_embeddings[:, 0], two_d_embeddings[:, 1], c=labels)
-        # pylab.annotate(label, xy=(x, y), xytext=(5, 2), textcoords='offset points', ha='right', va='bottom')
     pylab.show()
