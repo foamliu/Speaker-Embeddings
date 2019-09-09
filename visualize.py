@@ -38,8 +38,8 @@ if __name__ == '__main__':
             mel = torch.unsqueeze(torch.from_numpy(mel), dim=0)
             mel = mel.to(hp.device)
             feature = model(mel)[0]
-            feature = F.normalize(feature)
             feature = feature.cpu().numpy()
+            feature = feature / np.linalg.norm(feature)
             embeddings[i] = feature
             labels.append(label)
     print(labels)
