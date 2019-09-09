@@ -12,11 +12,16 @@ class GST(nn.Module):
         super().__init__()
         self.encoder = ReferenceEncoder()
         self.stl = StyleTokenLayer()
+        self.dropout = nn.Dropout()
+        self.bn = nn.BatchNorm1d(512)
 
     def forward(self, inputs):
         enc_out = self.encoder(inputs)
-        style_embed = self.stl(enc_out)
-        style_embed = torch.squeeze(style_embed, dim=1)
+        x = self.stl(enc_out)
+        x = torch.squeeze(x, dim=1)
+        x = self.dropout(x)
+        style_embed = self.bn(x)
+
         return style_embed
 
 
