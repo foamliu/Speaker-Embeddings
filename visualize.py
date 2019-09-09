@@ -26,11 +26,6 @@ def build_dict(id):
 
 
 def get_cmap():
-    # x = np.random.rand(20)  # define the data
-    # y = np.random.rand(20)  # define the data
-    # tag = np.random.randint(0, 20, 20)
-    # tag[10:12] = 0  # make sure there are some 0 values to show up as grey
-
     cmap = pylab.cm.jet  # define the colormap
     # extract all colors from the .jet map
     cmaplist = [cmap(i) for i in range(cmap.N)]
@@ -42,7 +37,7 @@ def get_cmap():
         'Custom cmap', cmaplist, cmap.N)
 
     # define the bins and normalize
-    bounds = np.linspace(0, 10, 11)
+    bounds = np.linspace(0, 20, 21)
     norm = mpl.colors.BoundaryNorm(bounds, cmap.N)
     return cmap, norm
 
@@ -101,5 +96,5 @@ if __name__ == '__main__':
     cmap, norm = get_cmap()
 
     pylab.figure(figsize=(15, 15))
-    pylab.scatter(two_d_embeddings[:, 0], two_d_embeddings[:, 1], c=labels)
+    pylab.scatter(two_d_embeddings[:, 0], two_d_embeddings[:, 1], c=labels, cmap=cmap, norm=norm)
     pylab.show()
