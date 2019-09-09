@@ -1,6 +1,7 @@
 import random
 
 import matplotlib
+import matplotlib as mpl
 from matplotlib import pylab
 
 matplotlib.use('tkagg')
@@ -22,6 +23,28 @@ def build_dict(id):
         next_index = len(id_to_label)
         id_to_label[id] = next_index
     return id_to_label[id]
+
+
+def get_cmap():
+    # x = np.random.rand(20)  # define the data
+    # y = np.random.rand(20)  # define the data
+    # tag = np.random.randint(0, 20, 20)
+    # tag[10:12] = 0  # make sure there are some 0 values to show up as grey
+
+    cmap = pylab.cm.jet  # define the colormap
+    # extract all colors from the .jet map
+    cmaplist = [cmap(i) for i in range(cmap.N)]
+    # force the first color entry to be grey
+    cmaplist[0] = (.5, .5, .5, 1.0)
+
+    # create the new map
+    cmap = mpl.colors.LinearSegmentedColormap.from_list(
+        'Custom cmap', cmaplist, cmap.N)
+
+    # define the bins and normalize
+    bounds = np.linspace(0, 20, 21)
+    norm = mpl.colors.BoundaryNorm(bounds, cmap.N)
+    return cmap
 
 
 if __name__ == '__main__':
@@ -69,15 +92,17 @@ if __name__ == '__main__':
             feature = feature / np.linalg.norm(feature)
             embeddings[i] = feature
             labels.append(label)
-    print(labels)
+    # print(labels)
 
     print('t-SNE: fitting transform...')
     tsne = TSNE(perplexity=30, n_components=2, init='pca', n_iter=5000)
     two_d_embeddings = tsne.fit_transform(embeddings)
 
+    cmap = get_cmap()
+
     pylab.figure(figsize=(15, 15))
     for i, label in enumerate(labels):
         x, y = two_d_embeddings[i, :]
-        pylab.scatter(x, y, c=label/10, cmap='hsv')
+        pylab.scatter(x, y, c=label, cmap=cmap)
         # pylab.annotate(label, xy=(x, y), xytext=(5, 2), textcoords='offset points', ha='right', va='bottom')
     plt.show()
