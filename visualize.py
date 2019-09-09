@@ -1,8 +1,8 @@
-import pickle
-from matplotlib import pylab
-import matplotlib
-import torch.nn.functional as F
 import random
+
+import matplotlib
+from matplotlib import pylab
+
 matplotlib.use('tkagg')
 import matplotlib.pyplot as plt
 import numpy as np
@@ -14,6 +14,15 @@ from config import wav_folder
 import config as hp
 from models.embedder import GST
 from utils import extract_feature, build_LFR_features
+
+
+def build_dict(id):
+    global id_to_label
+    if not id in id_to_label:
+        next_index = len(id_to_label)
+        id_to_label[id] = next_index
+    return id_to_label[id]
+
 
 if __name__ == '__main__':
     checkpoint = 'speaker-embeddings.pt'
@@ -27,9 +36,10 @@ if __name__ == '__main__':
     dirs = random.sample(dirs, 10)
 
     samples = []
+    id_to_label = {}
 
     for id in dirs:
-        label = id
+        label = build_dict(id)
         folder = os.path.join(wav_folder, id)
         sub_folders = [s for s in os.listdir(folder)]
         for sub in sub_folders:
@@ -65,19 +75,9 @@ if __name__ == '__main__':
     tsne = TSNE(perplexity=30, n_components=2, init='pca', n_iter=5000)
     two_d_embeddings = tsne.fit_transform(embeddings)
 
-    # x = []
-    # y = []
-    # for i in range(1000):
-    #     x.append(two_d_embeddings[i][0])
-    #     y.append(two_d_embeddings[i][1])
-    # plt.scatter(x, y, c=labels)
-
     pylab.figure(figsize=(15, 15))
     for i, label in enumerate(labels):
         x, y = two_d_embeddings[i, :]
-        pylab.scatter(x, y)
-        pylab.annotate(label, xy=(x, y), xytext=(5, 2), textcoords='offset points',
-                       ha='right', va='bottom')
-
-    # plt.annotate(labels, xy=(x, y), xytext=(5, 2), textcoords='offset points', ha='right', va='bottom')
+        pylab.scatter(x, y, c=label/10, cmap='hsv')
+        # pylab.annotate(label, xy=(x, y), xytext=(5, 2), textcoords='offset points', ha='right', va='bottom')
     plt.show()
