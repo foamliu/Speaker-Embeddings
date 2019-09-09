@@ -154,8 +154,8 @@ def train(train_loader, model, metric_fc, criterion, optimizer, epoch, logger, w
                         'Loss {loss.val:.5f} ({loss.avg:.5f})\t'
                         'Accuracy {accs.val:.3f} ({accs.avg:.3f})'.format(epoch, i, len(train_loader), loss=losses,
                                                                           accs=accs))
-            writer.add_scalar('step_num/train_loss', losses.avg, optimizer.step_num)
-            writer.add_scalar('step_num/train_accuracy', accs.avg, optimizer.step_num)
+            # writer.add_scalar('step_num/train_loss', losses.avg, optimizer.step_num)
+            # writer.add_scalar('step_num/train_accuracy', accs.avg, optimizer.step_num)
 
     return losses.avg, accs.avg
 
