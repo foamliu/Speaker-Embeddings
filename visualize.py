@@ -1,5 +1,5 @@
 import pickle
-
+from matplotlib import pylab
 import matplotlib
 import torch.nn.functional as F
 matplotlib.use('tkagg')
@@ -48,11 +48,18 @@ if __name__ == '__main__':
     tsne = TSNE(perplexity=30, n_components=2, init='pca', n_iter=5000)
     two_d_embeddings = tsne.fit_transform(embeddings)
 
-    x = []
-    y = []
-    for i in range(1000):
-        x.append(two_d_embeddings[i][0])
-        y.append(two_d_embeddings[i][1])
-    plt.scatter(x, y, c=labels)
+    # x = []
+    # y = []
+    # for i in range(1000):
+    #     x.append(two_d_embeddings[i][0])
+    #     y.append(two_d_embeddings[i][1])
+    # plt.scatter(x, y, c=labels)
+
+    for i, label in enumerate(labels):
+        x, y = embeddings[i, :]
+        pylab.scatter(x, y)
+        pylab.annotate(label, xy=(x, y), xytext=(5, 2), textcoords='offset points',
+                       ha='right', va='bottom')
+
     # plt.annotate(labels, xy=(x, y), xytext=(5, 2), textcoords='offset points', ha='right', va='bottom')
     plt.show()
