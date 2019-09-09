@@ -100,7 +100,6 @@ if __name__ == '__main__':
 
     cmap, norm = get_cmap()
 
-    fig, ax = pylab.subplots(1, 1, figsize=(6, 6))  # setup the plot
     pylab.figure(figsize=(15, 15))
     for i, label in enumerate(labels):
         x, y = two_d_embeddings[i, :]
