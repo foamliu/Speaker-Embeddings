@@ -42,7 +42,7 @@ def train_net(args):
         #     torch.optim.Adam([{'params': model.parameters()}, {'params': metric_fc.parameters()}], lr=args.lr,
         #                      weight_decay=args.l2, betas=(0.9, 0.999), eps=1e-6))
         optimizer = torch.optim.Adam([{'params': model.parameters()}, {'params': metric_fc.parameters()}], lr=args.lr,
-                             weight_decay=args.l2, betas=(0.9, 0.999), eps=1e-6)
+                                     weight_decay=args.l2, betas=(0.9, 0.999), eps=1e-6)
 
     else:
         checkpoint = torch.load(checkpoint)
