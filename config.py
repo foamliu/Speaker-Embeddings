@@ -30,10 +30,10 @@ checkpoint = None  # path to checkpoint, None if none
 sample_rate = 16000  # vox1
 
 # Data parameters
-num_train = 148642
+num_train = 147642
 num_valid = 1000
 
-num_classes = 1251
+num_classes = 1211
 
 DATA_DIR = 'data'
 vox1_folder = 'data/vox1'
