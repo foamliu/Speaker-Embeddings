@@ -37,5 +37,6 @@ num_classes = 1251
 
 DATA_DIR = 'data'
 vox1_folder = 'data/vox1'
-wav_folder = os.path.join(vox1_folder, 'wav')
+dev_wav_folder = os.path.join(vox1_folder, 'dev/wav')
+test_wav_folder = os.path.join(vox1_folder, 'test/wav')
 data_file = 'data/vox1.pickle'

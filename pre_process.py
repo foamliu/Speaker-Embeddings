@@ -2,19 +2,19 @@ import os
 import pickle
 import random
 
-from config import wav_folder, data_file
+from config import dev_wav_folder, data_file
 
 
 def get_data():
     print('getting data...')
 
-    dirs = [d for d in os.listdir(wav_folder) if d.startswith('id')]
+    dirs = [d for d in os.listdir(dev_wav_folder) if d.startswith('id')]
 
     samples = []
 
     for id in dirs:
         label = build_dict(id)
-        folder = os.path.join(wav_folder, id)
+        folder = os.path.join(dev_wav_folder, id)
         sub_folders = [s for s in os.listdir(folder)]
         for sub in sub_folders:
             sub_folder = os.path.join(folder, sub)
