@@ -38,7 +38,7 @@ $ python extract.py
 ```
 
 
-Scan transcript data, generate features:
+Split dev set to train and valid samples:
 ```bash
 $ python pre_process.py
 ```
@@ -54,7 +54,7 @@ $ tensorboard --logdir runs
 ```
 
 ### Demo
-Pick 10 random test examples from test set:
+Visualize speaker embeddings from test set:
 ```bash
-$ python demo.py
+$ python visualize.py
 ```
