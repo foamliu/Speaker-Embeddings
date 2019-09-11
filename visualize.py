@@ -37,7 +37,7 @@ def get_cmap():
         'Custom cmap', cmaplist, cmap.N)
 
     # define the bins and normalize
-    bounds = np.linspace(0, 20, 21)
+    bounds = np.linspace(0, 40, 41)
     norm = mpl.colors.BoundaryNorm(bounds, cmap.N)
     return cmap, norm
 
