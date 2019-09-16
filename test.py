@@ -1,79 +1,68 @@
 import argparse
 import pickle
-
-import torch
+import os
+import random
 from tqdm import tqdm
-
-from config import pickle_file, device, input_dim, LFR_m, LFR_n, sos_id, eos_id
-from data_gen import build_LFR_features
-from utils import extract_feature
-from xer import cer_function
+import config as hp
 
 
-def parse_args():
-    parser = argparse.ArgumentParser(
-        "End-to-End Automatic Speech Recognition Decoding.")
-    # decode
-    parser.add_argument('--beam_size', default=5, type=int,
-                        help='Beam size')
-    parser.add_argument('--nbest', default=1, type=int,
-                        help='Nbest size')
-    parser.add_argument('--decode_max_len', default=100, type=int,
-                        help='Max output length. If ==0 (default), it uses a '
-                             'end-detect function to automatically find maximum '
-                             'hypothesis lengths')
-    args = parser.parse_args()
-    return args
+if __name__ == "__main__":
+    num_tests = 6000
 
+    num_same = int(num_tests / 2)
+    num_not_same = num_tests - num_same
 
-if __name__ == '__main__':
-    args = parse_args()
-    with open(pickle_file, 'rb') as file:
-        data = pickle.load(file)
-    char_list = data['IVOCAB']
-    samples = data['test']
+    out_lines = []
+    exclude_list = set()
 
-    checkpoint = 'BEST_checkpoint.tar'
-    checkpoint = torch.load(checkpoint, map_location='cpu')
-    model = checkpoint['model'].to(device)
-    model.eval()
+    picked = set()
+    for _ in tqdm(range(num_same)):
+        dirs = [d for d in os.listdir(hp.test_wav_folder) if os.path.isdir(os.path.join(hp.test_wav_folder, d))]
+        folder = random.choice(dirs)
+        folder = os.path.join(hp.test_wav_folder, folder)
+        for root, dir, files in os.walk(folder):
+            print(root, dir, files)
 
-    num_samples = len(samples)
-
-    total_cer = 0
-
-    for i in tqdm(range(num_samples)):
-        sample = samples[i]
-        wave = sample['wave']
-        trn = sample['trn']
-
-        feature = extract_feature(input_file=wave, feature='fbank', dim=input_dim, cmvn=True)
-        feature = build_LFR_features(feature, m=LFR_m, n=LFR_n)
-        # feature = np.expand_dims(feature, axis=0)
-        input = torch.from_numpy(feature).to(device)
-        input_length = [input[0].shape[0]]
-        input_length = torch.LongTensor(input_length).to(device)
-        with torch.no_grad():
-            nbest_hyps = model.recognize(input, input_length, char_list, args)
-
-        hyp_list = []
-        for hyp in nbest_hyps:
-            out = hyp['yseq']
-            out = [char_list[idx] for idx in out if idx not in (sos_id, eos_id)]
-            out = ''.join(out)
-            hyp_list.append(out)
-
-        print(hyp_list)
-
-        gt = [char_list[idx] for idx in trn if idx not in (sos_id, eos_id)]
-        gt = ''.join(gt)
-        gt_list = [gt]
-
-        print(gt_list)
-
-        cer = cer_function(gt_list, hyp_list)
-        total_cer += cer
-
-    avg_cer = total_cer / num_samples
-
-    print('avg_cer: ' + str(avg_cer))
+    #     while len([f for f in os.listdir(os.path.join(IMG_DIR, folder)) if
+    #                f.endswith('.jpg') and not f.endswith('0.jpg')]) < 1:
+    #         folder = random.choice(dirs)
+    #
+    #     files = [f for f in os.listdir(os.path.join(IMG_DIR, folder)) if f.endswith('.jpg') and not f.endswith('0.jpg')]
+    #     file_1 = random.choice(files)
+    #     file_0 = os.path.join(folder, '0.jpg').replace('\\', '/')
+    #     file_1 = os.path.join(folder, file_1).replace('\\', '/')
+    #     out_lines.append('{} {} {}\n'.format(file_0, file_1, 1))
+    #     exclude_list.add(file_0)
+    #     exclude_list.add(file_1)
+    #
+    # for _ in tqdm(range(num_not_same)):
+    #     dirs = [d for d in os.listdir(IMG_DIR) if os.path.isdir(os.path.join(IMG_DIR, d))]
+    #     folders = random.sample(dirs, 2)
+    #     while len([f for f in os.listdir(os.path.join(IMG_DIR, folders[0])) if
+    #                f.endswith('.jpg') and not f.endswith('0.jpg')]) < 1 or len(
+    #         [f for f in os.listdir(os.path.join(IMG_DIR, folders[1])) if
+    #          f.endswith('.jpg') and not f.endswith('0.jpg')]) < 1:
+    #         folders = random.sample(dirs, 2)
+    #
+    #     file_0 = folders[0] + '/' + '0.jpg'
+    #     file_1 = pick_one_file(folders[1])
+    #     out_lines.append('{} {} {}\n'.format(file_0, file_1, 0))
+    #     exclude_list.add(os.path.join(file_0))
+    #     exclude_list.add(os.path.join(file_1))
+    #
+    # with open('data/test_pairs.txt', 'w') as file:
+    #     file.writelines(out_lines)
+    #
+    # print(exclude_list)
+    #
+    # samples = get_data()
+    # filtered = []
+    # for item in samples:
+    #     if item['img'] not in exclude_list:
+    #         filtered.append(item)
+    #
+    # print(len(filtered))
+    # print(filtered[:10])
+    #
+    # with open(pickle_file, 'wb') as file:
+    #     pickle.dump(filtered, file)
