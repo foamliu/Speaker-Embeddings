@@ -126,5 +126,7 @@ if __name__ == '__main__':
     pylab.figure(figsize=(15, 15))
     pylab.scatter(two_d_embeddings[:, 0], two_d_embeddings[:, 1], c=labels, cmap=cmap, norm=norm, alpha=0.8,
                   edgecolors='none', s=10)
-    pylab.annotate(ids, xy=(xs, ys), xytext=(5, 2), textcoords='offset points', ha='right', va='bottom')
+    for i, id in enumerate(ids):
+        pylab.annotate(label, xy=(xs[i], ys[i]), xytext=(5, 2), textcoords='offset points',
+                       ha='right', va='bottom')
     pylab.show()
