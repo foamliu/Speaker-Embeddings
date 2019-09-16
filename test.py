@@ -1,12 +1,16 @@
+import math
 import os
 import random
+import time
 
+import numpy as np
 import torch
 from tqdm import tqdm
-import time
+
 import config as hp
 from models.embedder import GST
 from utils import extract_feature
+
 test_file = 'data/test_pairs.txt'
 
 
@@ -59,17 +63,19 @@ def evaluate(model):
         for line in tqdm(lines):
             tokens = line.split()
             file0 = tokens[0]
-            feature0  = extract_feature(input_file=file0, feature='fbank', dim=hp.n_mels, cmvn=True)
+            mel0 = extract_feature(input_file=file0, feature='fbank', dim=hp.n_mels, cmvn=True)
+            mel0 = torch.unsqueeze(torch.from_numpy(mel0), dim=0)
+            mel0 = mel0.to(hp.device)
+            output = model(mel0)[0]
+            feature0 = output.cpu().numpy()
+
             file1 = tokens[1]
-            feature1 = extract_feature(input_file=file1, feature='fbank', dim=hp.n_mels, cmvn=True)
-            imgs = torch.zeros([2, 3, 112, 112], dtype=torch.float, device=device)
-            imgs[0] = img0
-            imgs[1] = img1
+            mel1 = extract_feature(input_file=file1, feature='fbank', dim=hp.n_mels, cmvn=True)
+            mel1 = torch.unsqueeze(torch.from_numpy(mel1), dim=0)
+            mel1 = mel1.to(hp.device)
+            output = model(mel1)[0]
+            feature1 = output.cpu().numpy()
 
-            output = model(imgs)
-
-            feature0 = output[0].cpu().numpy()
-            feature1 = output[1].cpu().numpy()
             x0 = feature0 / np.linalg.norm(feature0)
             x1 = feature1 / np.linalg.norm(feature1)
             cosine = np.dot(x0, x1)
@@ -92,3 +98,5 @@ if __name__ == "__main__":
     model.load_state_dict(torch.load(checkpoint))
     model = model.to(hp.device)
     model.eval()
+
+    evaluate(model)
