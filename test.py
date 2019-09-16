@@ -4,7 +4,9 @@ import random
 import time
 
 import numpy as np
+import scipy.stats
 import torch
+from matplotlib import pyplot as plt
 from tqdm import tqdm
 
 import config as hp
@@ -140,6 +142,71 @@ def accuracy(threshold):
     return accuracy
 
 
+def visualize(threshold):
+    with open(angles_file) as file:
+        lines = file.readlines()
+
+    ones = []
+    zeros = []
+
+    for line in lines:
+        tokens = line.split()
+        angle = float(tokens[0])
+        type = int(tokens[1])
+        if type == 1:
+            ones.append(angle)
+        else:
+            zeros.append(angle)
+
+    bins = np.linspace(0, 180, 181)
+
+    plt.hist(zeros, bins, density=True, alpha=0.5, label='0', facecolor='red')
+    plt.hist(ones, bins, density=True, alpha=0.5, label='1', facecolor='blue')
+
+    mu_0 = np.mean(zeros)
+    sigma_0 = np.std(zeros)
+    y_0 = scipy.stats.norm.pdf(bins, mu_0, sigma_0)
+    plt.plot(bins, y_0, 'r--')
+    mu_1 = np.mean(ones)
+    sigma_1 = np.std(ones)
+    y_1 = scipy.stats.norm.pdf(bins, mu_1, sigma_1)
+    plt.plot(bins, y_1, 'b--')
+    plt.xlabel('theta')
+    plt.ylabel('theta j Distribution')
+    plt.title(
+        r'Histogram : mu_0={:.4f},sigma_0={:.4f}, mu_1={:.4f},sigma_1={:.4f}'.format(mu_0, sigma_0, mu_1, sigma_1))
+
+    print('threshold: ' + str(threshold))
+    print('mu_0: ' + str(mu_0))
+    print('sigma_0: ' + str(sigma_0))
+    print('mu_1: ' + str(mu_1))
+    print('sigma_1: ' + str(sigma_1))
+
+    plt.legend(loc='upper right')
+    plt.plot([threshold, threshold], [0, 0.05], 'k-', lw=2)
+    plt.savefig('images/theta_dist.png')
+    plt.show()
+
+
+def error_analysis(threshold):
+    with open(angles_file) as file:
+        angle_lines = file.readlines()
+
+    fp = []
+    fn = []
+    for i, line in enumerate(angle_lines):
+        tokens = line.split()
+        angle = float(tokens[0])
+        type = int(tokens[1])
+        if angle <= threshold and type == 0:
+            fp.append(i)
+        if angle > threshold and type == 1:
+            fn.append(i)
+
+    print('len(fp): ' + str(len(fp)))
+    print('len(fn): ' + str(len(fn)))
+
+
 if __name__ == "__main__":
     checkpoint = 'speaker-embeddings.pt'
     print('loading model: {}...'.format(checkpoint))
@@ -157,3 +224,9 @@ if __name__ == "__main__":
     print('Calculating accuracy...')
     acc = accuracy(thres)
     print('Accuracy: {}%, threshold: {}'.format(acc * 100, thres))
+
+    print('Visualizing {}...'.format(angles_file))
+    visualize(thres)
+
+    print('error analysis...')
+    error_analysis(thres)
