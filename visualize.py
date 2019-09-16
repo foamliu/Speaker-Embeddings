@@ -1,5 +1,3 @@
-import random
-
 import matplotlib
 import matplotlib as mpl
 from matplotlib import pylab
@@ -96,5 +94,6 @@ if __name__ == '__main__':
     cmap, norm = get_cmap()
 
     pylab.figure(figsize=(15, 15))
-    pylab.scatter(two_d_embeddings[:, 0], two_d_embeddings[:, 1], c=labels, cmap=cmap, norm=norm)
+    pylab.scatter(two_d_embeddings[:, 0], two_d_embeddings[:, 1], c=labels, cmap=cmap, norm=norm, alpha=0.8,
+                  edgecolors='none', s=10)
     pylab.show()
