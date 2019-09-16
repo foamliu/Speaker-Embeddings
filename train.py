@@ -7,8 +7,8 @@ from config import device, print_freq
 from data_gen import VoxCeleb1Dataset, pad_collate
 from models.arc_margin import ArcMarginModel
 from models.embedder import GST
-from test import test
-from utils import parse_args, save_checkpoint, AverageMeter, get_logger, accuracy
+from test import test, visualize
+from utils import parse_args, save_checkpoint, AverageMeter, get_logger, accuracy, theta_dist
 
 
 def train_net(args):
@@ -101,6 +101,12 @@ def train_net(args):
 
         # Save checkpoint
         save_checkpoint(epoch, epochs_since_improvement, model, metric_fc, optimizer, best_acc, is_best)
+
+        # theta dist
+        visualize(threshold, show=False)
+        img = theta_dist()
+
+        writer.add_image('model/theta_dist', img, epoch, dataformats='HWC')
 
 
 def train(train_loader, model, metric_fc, criterion, optimizer, epoch, logger, writer):

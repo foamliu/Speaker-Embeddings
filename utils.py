@@ -1,6 +1,7 @@
 import argparse
 import logging
 
+import cv2 as cv
 import librosa
 import numpy as np
 import torch
@@ -207,3 +208,11 @@ def build_LFR_features(inputs, m, n):
                 frame = np.hstack((frame, inputs[-1]))
             LFR_inputs.append(frame)
     return np.vstack(LFR_inputs)
+
+
+def theta_dist():
+    from test import image_name
+    img = cv.imread(image_name)
+    img = cv.cvtColor(img, cv.COLOR_BGR2RGB)
+    img = img / 255.
+    return img

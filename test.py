@@ -15,6 +15,7 @@ from utils import extract_feature, ensure_folder
 
 test_file = 'data/test_pairs.txt'
 angles_file = 'data/angles.txt'
+image_name = 'images/theta_dist.png'
 
 
 def gen_test_pairs():
@@ -142,7 +143,7 @@ def accuracy(threshold):
     return accuracy
 
 
-def visualize(threshold):
+def visualize(threshold, show=True):
     with open(angles_file) as file:
         lines = file.readlines()
 
@@ -184,10 +185,11 @@ def visualize(threshold):
 
     plt.legend(loc='upper right')
     plt.plot([threshold, threshold], [0, 0.05], 'k-', lw=2)
-    plt.show()
+    if show:
+        plt.show()
 
     ensure_folder('images')
-    plt.savefig('images/theta_dist.png')
+    plt.savefig(image_name)
 
 
 def error_analysis(threshold):
