@@ -16,12 +16,12 @@ if __name__ == "__main__":
     exclude_list = set()
 
     picked = set()
-    for _ in tqdm(range(num_same)):
-        dirs = [d for d in os.listdir(hp.test_wav_folder) if os.path.isdir(os.path.join(hp.test_wav_folder, d))]
-        folder = random.choice(dirs)
-        folder = os.path.join(hp.test_wav_folder, folder)
-        for root, dir, files in os.walk(folder):
-            print(root, dir, files)
+    #for _ in tqdm(range(num_same)):
+    dirs = [d for d in os.listdir(hp.test_wav_folder) if os.path.isdir(os.path.join(hp.test_wav_folder, d))]
+    folder = random.choice(dirs)
+    folder = os.path.join(hp.test_wav_folder, folder)
+    for root, dir, files in os.walk(folder):
+        print(root, dir, files)
 
     #     while len([f for f in os.listdir(os.path.join(IMG_DIR, folder)) if
     #                f.endswith('.jpg') and not f.endswith('0.jpg')]) < 1:
