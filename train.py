@@ -2,12 +2,12 @@ import numpy as np
 import torch
 from tensorboardX import SummaryWriter
 from torch import nn
-from test import test
 
 from config import device, print_freq
 from data_gen import VoxCeleb1Dataset, pad_collate
 from models.arc_margin import ArcMarginModel
 from models.embedder import GST
+from test import test
 from utils import parse_args, save_checkpoint, AverageMeter, get_logger, accuracy
 
 
@@ -150,9 +150,6 @@ def train(train_loader, model, metric_fc, criterion, optimizer, epoch, logger, w
             # writer.add_scalar('step_num/train_accuracy', accs.avg, optimizer.step_num)
 
     return losses.avg, accs.avg
-
-
-
 
 
 def main():
