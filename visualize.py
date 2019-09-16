@@ -77,7 +77,7 @@ if __name__ == '__main__':
             wave = sample['audiopath']
             label = sample['label']
             mel = extract_feature(input_file=wave, feature='fbank', dim=hp.n_mels, cmvn=True)
-            mel = build_LFR_features(mel, m=hp.LFR_m, n=hp.LFR_n)
+            # mel = build_LFR_features(mel, m=hp.LFR_m, n=hp.LFR_n)
             mel = torch.unsqueeze(torch.from_numpy(mel), dim=0)
             mel = mel.to(hp.device)
             feature = model(mel)[0]
