@@ -43,18 +43,19 @@ if __name__ == "__main__":
     data = dict()
     data['id_to_label'] = id_to_label
 
-    num_valid = 1000
-    valid = random.sample(samples, num_valid)
-    train = [s for s in samples if s not in valid]
+    # num_valid = 1000
+    # valid = random.sample(samples, num_valid)
+    # train = [s for s in samples if s not in valid]
+    train = samples
 
     data['train'] = train
-    data['valid'] = valid
+    # data['valid'] = valid
 
     with open(data_file, 'wb') as file:
         pickle.dump(data, file)
 
     print('num_train: ' + str(len(data['train'])))
-    print('num_valid: ' + str(len(data['valid'])))
+    # print('num_valid: ' + str(len(data['valid'])))
     print('num_classes: ' + str(len(id_to_label)))
 
     print(samples[:10])

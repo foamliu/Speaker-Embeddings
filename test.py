@@ -209,14 +209,7 @@ def error_analysis(threshold):
     print('len(fn): ' + str(len(fn)))
 
 
-if __name__ == "__main__":
-    checkpoint = 'speaker-embeddings.pt'
-    print('loading model: {}...'.format(checkpoint))
-    model = GST()
-    model.load_state_dict(torch.load(checkpoint))
-    model = model.to(hp.device)
-    model.eval()
-
+def test(model):
     print('Evaluating {}...'.format(angles_file))
     evaluate(model)
 
@@ -226,6 +219,18 @@ if __name__ == "__main__":
     print('Calculating accuracy...')
     acc = accuracy(thres)
     print('Accuracy: {}%, threshold: {}'.format(acc * 100, thres))
+    return acc, thres
+
+
+if __name__ == "__main__":
+    checkpoint = 'speaker-embeddings.pt'
+    print('loading model: {}...'.format(checkpoint))
+    model = GST()
+    model.load_state_dict(torch.load(checkpoint))
+    model = model.to(hp.device)
+    model.eval()
+
+    acc, thres = test(model)
 
     print('Visualizing {}...'.format(angles_file))
     visualize(thres)
