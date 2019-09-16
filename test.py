@@ -22,6 +22,7 @@ if __name__ == "__main__":
             files = [os.path.join(root, file) for file in files]
             file_list += files
         pair = random.sample(file_list, 2)
+        out_lines.append('{} {} {}\n'.format(pair[0], pair[1], 1))
 
     with open('data/test_pairs.txt', 'w') as file:
         file.writelines(out_lines)
