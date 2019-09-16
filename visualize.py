@@ -45,19 +45,17 @@ def get_annotations(two_d, ids):
     for i, id in enumerate(ids):
         x, y = two_d[i][0], two_d[i][1]
         if id in speakers:
-            speakers[id]['x'] += x
-            speakers[id]['y'] += y
-            speakers[id]['cnt'] += 1
+            speakers[id]['x'].append(x)
+            speakers[id]['y'].append(y)
         else:
-            speakers[id] = {'x': 0, 'y': 0, 'cnt': 0}
+            speakers[id] = {'x': [], 'y': []}
 
     xs = []
     ys = []
     ids = []
     for id in speakers.keys():
-        cnt = speakers[id]['cnt']
-        xs.append(speakers[id]['x'] / cnt)
-        ys.append(speakers[id]['y'] / cnt)
+        xs.append(np.median(speakers[id]['x']))
+        ys.append(np.median(speakers[id]['y']))
         ids.append(id)
 
     # print('xs: ' + str(xs))
