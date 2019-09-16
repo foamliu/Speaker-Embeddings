@@ -75,8 +75,7 @@ def train_net(args):
                                       criterion=criterion,
                                       optimizer=optimizer,
                                       epoch=epoch,
-                                      logger=logger,
-                                      writer=writer)
+                                      logger=logger)
         writer.add_scalar('model/train_loss', train_loss, epoch)
         writer.add_scalar('model/train_accuracy', train_acc, epoch)
 
@@ -89,6 +88,8 @@ def train_net(args):
         # One epoch's validation
         test_acc, threshold = test(model)
         writer.add_scalar('model/test_accuracy', test_acc, epoch)
+
+        print('Test accuracy: ' + str(test_acc))
 
         # Check if there was an improvement
         is_best = test_acc > best_acc
@@ -109,7 +110,7 @@ def train_net(args):
         writer.add_image('model/theta_dist', img, epoch, dataformats='HWC')
 
 
-def train(train_loader, model, metric_fc, criterion, optimizer, epoch, logger, writer):
+def train(train_loader, model, metric_fc, criterion, optimizer, epoch, logger):
     model.train()  # train mode (dropout and batchnorm is used)
     metric_fc.train()
 
@@ -152,8 +153,6 @@ def train(train_loader, model, metric_fc, criterion, optimizer, epoch, logger, w
                         'Loss {loss.val:.5f} ({loss.avg:.5f})\t'
                         'Accuracy {accs.val:.3f} ({accs.avg:.3f})'.format(epoch, i, len(train_loader), loss=losses,
                                                                           accs=accs))
-            # writer.add_scalar('step_num/train_loss', losses.avg, optimizer.step_num)
-            # writer.add_scalar('step_num/train_accuracy', accs.avg, optimizer.step_num)
 
     return losses.avg, accs.avg
 
