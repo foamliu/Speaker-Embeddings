@@ -20,10 +20,10 @@ def clip_gradient(optimizer, grad_clip):
                 param.grad.data.clamp_(-grad_clip, grad_clip)
 
 
-def save_checkpoint(epoch, epochs_since_improvement, model, metric_fc, optimizer, loss, is_best):
+def save_checkpoint(epoch, epochs_since_improvement, model, metric_fc, optimizer, acc, is_best):
     state = {'epoch': epoch,
              'epochs_since_improvement': epochs_since_improvement,
-             'loss': loss,
+             'acc': acc,
              'model': model,
              'metric_fc': metric_fc,
              'optimizer': optimizer}

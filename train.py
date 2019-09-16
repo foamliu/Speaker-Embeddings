@@ -2,7 +2,7 @@ import numpy as np
 import torch
 from tensorboardX import SummaryWriter
 from torch import nn
-from tqdm import tqdm
+from test import test
 
 from config import device, print_freq
 from data_gen import VoxCeleb1Dataset, pad_collate
@@ -16,7 +16,7 @@ def train_net(args):
     np.random.seed(7)
     checkpoint = args.checkpoint
     start_epoch = 0
-    best_loss = float('inf')
+    best_acc = 0
     writer = SummaryWriter()
     epochs_since_improvement = 0
 
@@ -65,9 +65,6 @@ def train_net(args):
     train_dataset = VoxCeleb1Dataset(args, 'train')
     train_loader = torch.utils.data.DataLoader(train_dataset, batch_size=args.batch_size, collate_fn=pad_collate,
                                                pin_memory=False, shuffle=True, num_workers=args.num_workers)
-    valid_dataset = VoxCeleb1Dataset(args, 'valid')
-    valid_loader = torch.utils.data.DataLoader(valid_dataset, batch_size=args.batch_size, collate_fn=pad_collate,
-                                               pin_memory=False, shuffle=False, num_workers=args.num_workers)
 
     # Epochs
     for epoch in range(start_epoch, args.epochs):
@@ -90,17 +87,12 @@ def train_net(args):
         # print('Step num: {}\n'.format(step_num))
 
         # One epoch's validation
-        valid_loss, valid_acc = valid(valid_loader=valid_loader,
-                                      model=model,
-                                      metric_fc=metric_fc,
-                                      criterion=criterion,
-                                      logger=logger)
-        writer.add_scalar('model/valid_loss', valid_loss, epoch)
-        writer.add_scalar('model/valid_accuracy', valid_acc, epoch)
+        test_acc, threshold = test(model)
+        writer.add_scalar('model/test_accuracy', test_acc, epoch)
 
         # Check if there was an improvement
-        is_best = valid_loss < best_loss
-        best_loss = min(valid_loss, best_loss)
+        is_best = test_acc > best_acc
+        best_acc = max(test_acc, best_acc)
         if not is_best:
             epochs_since_improvement += 1
             print("\nEpochs since last improvement: %d\n" % (epochs_since_improvement,))
@@ -108,7 +100,7 @@ def train_net(args):
             epochs_since_improvement = 0
 
         # Save checkpoint
-        save_checkpoint(epoch, epochs_since_improvement, model, metric_fc, optimizer, best_loss, is_best)
+        save_checkpoint(epoch, epochs_since_improvement, model, metric_fc, optimizer, best_acc, is_best)
 
 
 def train(train_loader, model, metric_fc, criterion, optimizer, epoch, logger, writer):
@@ -160,38 +152,7 @@ def train(train_loader, model, metric_fc, criterion, optimizer, epoch, logger, w
     return losses.avg, accs.avg
 
 
-def valid(valid_loader, model, metric_fc, criterion, logger):
-    model.eval()
-    metric_fc.eval()
 
-    losses = AverageMeter()
-    accs = AverageMeter()
-
-    # Batches
-    for data in tqdm(valid_loader):
-        # Move to GPU, if available
-        padded_input, input_lengths, label = data
-        padded_input = padded_input.to(device)
-        # input_lengths = input_lengths.to(device)
-        label = label.to(device)
-
-        # Forward prop.
-        with torch.no_grad():
-            feature = model(padded_input)  # embedding => [N, 512]
-            output = metric_fc(feature, label)  # class_id_out => [N, 1251]
-
-        # Calculate loss
-        loss = criterion(output, label)
-
-        # Keep track of metrics
-        losses.update(loss.item())
-        top1_accuracy = accuracy(output, label, 5)
-        accs.update(top1_accuracy)
-
-    # Print status
-    logger.info('Validation\t Loss {loss.avg:.5f}\tAccuracy {accs.avg:.3f}\n'.format(loss=losses, accs=accs))
-
-    return losses.avg, accs.avg
 
 
 def main():
