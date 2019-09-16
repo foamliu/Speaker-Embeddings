@@ -53,6 +53,13 @@ If you want to visualize during training, run in your terminal:
 $ tensorboard --logdir runs
 ```
 
+### Performance
+Margin-s|Margin-m|Test(%)|Inference speed| 
+|---|---|---|---|
+|10.0|0.0|84.67%|18.18 ms|
+
+
+
 ### Demo
 Visualize speaker embeddings from test set:
 ```bash
