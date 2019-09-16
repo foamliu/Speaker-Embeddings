@@ -12,6 +12,7 @@ from models.embedder import GST
 from utils import extract_feature
 
 test_file = 'data/test_pairs.txt'
+angles_file = 'data/angles.txt'
 
 
 def gen_test_pairs():
@@ -87,8 +88,56 @@ def evaluate(model):
     elapsed_time = time.time() - start
     print('elapsed time(sec) per image: {}'.format(elapsed_time / (6000 * 2)))
 
-    with open('data/angles.txt', 'w') as file:
+    with open(angles_file, 'w') as file:
         file.writelines(angles)
+
+
+def get_threshold():
+    with open(angles_file, 'r') as file:
+        lines = file.readlines()
+
+    data = []
+
+    for line in lines:
+        tokens = line.split()
+        angle = float(tokens[0])
+        type = int(tokens[1])
+        data.append({'angle': angle, 'type': type})
+
+    min_error = 6000
+    min_threshold = 0
+
+    for d in data:
+        threshold = d['angle']
+        type1 = len([s for s in data if s['angle'] <= threshold and s['type'] == 0])
+        type2 = len([s for s in data if s['angle'] > threshold and s['type'] == 1])
+        num_errors = type1 + type2
+        if num_errors < min_error:
+            min_error = num_errors
+            min_threshold = threshold
+
+    # print(min_error, min_threshold)
+    return min_threshold
+
+
+def accuracy(threshold):
+    with open(angles_file) as file:
+        lines = file.readlines()
+
+    wrong = 0
+    for line in lines:
+        tokens = line.split()
+        angle = float(tokens[0])
+        type = int(tokens[1])
+        if type == 1:
+            if angle > threshold:
+                wrong += 1
+        else:
+            if angle <= threshold:
+                wrong += 1
+
+    accuracy = 1 - wrong / 6000
+    return accuracy
 
 
 if __name__ == "__main__":
@@ -99,4 +148,12 @@ if __name__ == "__main__":
     model = model.to(hp.device)
     model.eval()
 
+    print('Evaluating {}...'.format(angles_file))
     evaluate(model)
+
+    print('Calculating threshold...')
+    thres = get_threshold()
+
+    print('Calculating accuracy...')
+    acc = accuracy(thres)
+    print('Accuracy: {}%, threshold: {}'.format(acc * 100, thres))
