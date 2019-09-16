@@ -1,10 +1,9 @@
-import argparse
-import pickle
 import os
 import random
-from tqdm import tqdm
-import config as hp
 
+from tqdm import tqdm
+
+import config as hp
 
 if __name__ == "__main__":
     num_tests = 6000
@@ -13,19 +12,19 @@ if __name__ == "__main__":
     num_not_same = num_tests - num_same
 
     out_lines = []
-    exclude_list = set()
 
-    picked = set()
-    # for _ in tqdm(range(num_same)):
-    dirs = [d for d in os.listdir(hp.test_wav_folder) if os.path.isdir(os.path.join(hp.test_wav_folder, d))]
-    folder = random.choice(dirs)
-    folder = os.path.join(hp.test_wav_folder, folder)
-    file_list = []
-    for root, dir, files in os.walk(folder):
-        files = [os.path.join(root, file) for file in files]
-        file_list += files
-    pair = random.sample(file_list, 2)
-    print(pair)
+    for _ in tqdm(range(num_same)):
+        dirs = [d for d in os.listdir(hp.test_wav_folder) if os.path.isdir(os.path.join(hp.test_wav_folder, d))]
+        folder = random.choice(dirs)
+        folder = os.path.join(hp.test_wav_folder, folder)
+        file_list = []
+        for root, dir, files in os.walk(folder):
+            files = [os.path.join(root, file) for file in files]
+            file_list += files
+        pair = random.sample(file_list, 2)
+
+    with open('data/test_pairs.txt', 'w') as file:
+        file.writelines(out_lines)
 
     #     while len([f for f in os.listdir(os.path.join(IMG_DIR, folder)) if
     #                f.endswith('.jpg') and not f.endswith('0.jpg')]) < 1:
