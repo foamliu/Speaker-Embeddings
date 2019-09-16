@@ -128,5 +128,5 @@ if __name__ == '__main__':
                   edgecolors='none', s=10)
     for i, id in enumerate(ids):
         pylab.annotate(id, xy=(xs[i], ys[i]), xytext=(0, 0), textcoords='offset points',
-                       ha='right', va='bottom')
+                       ha='center', va='center')
     pylab.show()
