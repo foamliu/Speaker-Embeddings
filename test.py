@@ -15,7 +15,8 @@ from utils import extract_feature, ensure_folder
 
 test_file = 'data/test_pairs.txt'
 angles_file = 'data/angles.txt'
-image_name = 'images/theta_dist.png'
+# image_name = 'images/theta_dist.png'
+image_name = 'images/test.png'
 
 
 def gen_test_pairs():

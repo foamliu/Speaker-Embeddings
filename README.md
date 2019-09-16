@@ -32,7 +32,7 @@ $ cat vox1_dev* > vox1_dev_wav.zip
 
 ## Usage
 ### Data Pre-processing
-Extract data_aishell.tgz:
+Extract vox1_dev_wav.zip & vox1_test_wav.zip:
 ```bash
 $ python extract.py
 ```
@@ -58,3 +58,10 @@ Visualize speaker embeddings from test set:
 ```bash
 $ python visualize.py
 ```
+
+#### Embeddings
+![image](https://github.com/foamliu/Speaker-Embeddings/raw/master/images/embeddings.png)
+
+
+#### Theta j Distribution
+![image](https://github.com/foamliu/Speaker-Embeddings/raw/master/images/theta_dist.png)
