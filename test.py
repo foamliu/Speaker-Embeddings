@@ -88,7 +88,7 @@ def evaluate(model):
             angles.append('{} {}\n'.format(theta, is_same))
 
     elapsed_time = time.time() - start
-    print('elapsed time(sec) per image: {}'.format(elapsed_time / (6000 * 2)))
+    print('elapsed time(sec) per audio: {}'.format(elapsed_time / (6000 * 2)))
 
     with open(angles_file, 'w') as file:
         file.writelines(angles)
