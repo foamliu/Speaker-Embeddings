@@ -60,9 +60,9 @@ def get_annotations(two_d, ids):
         ys.append(speakers[id]['y'] / cnt)
         ids.append(id)
 
-    print('xs: ' + str(xs))
-    print('ys: ' + str(ys))
-    print('ids: ' + str(ids))
+    # print('xs: ' + str(xs))
+    # print('ys: ' + str(ys))
+    # print('ids: ' + str(ids))
 
     return xs, ys, ids
 
