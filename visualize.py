@@ -12,7 +12,7 @@ import os
 from config import test_wav_folder
 import config as hp
 from models.embedder import GST
-from utils import extract_feature, build_LFR_features
+from utils import extract_feature
 
 
 def build_dict(id):
@@ -40,6 +40,29 @@ def get_cmap():
     return cmap, norm
 
 
+def get_annotations(two_d, ids):
+    speakers = {}
+    for i, id in enumerate(ids):
+        x, y = two_d[i][0], two_d[i][1]
+        if id in speakers:
+            speakers[id]['x'] += x
+            speakers[id]['y'] += y
+            speakers[id]['cnt'] += 1
+        else:
+            speakers[id] = {'x': 0, 'y': 0, 'cnt': 0}
+
+    xs = []
+    ys = []
+    ids = []
+    for id in speakers.keys():
+        cnt = speakers[id]['cnt']
+        xs.append(speakers[id]['x'] / cnt)
+        ys.append(speakers[id]['y'] / cnt)
+        ids.append(id)
+
+    return xs, ys, ids
+
+
 if __name__ == '__main__':
     checkpoint = 'speaker-embeddings.pt'
     print('loading model: {}...'.format(checkpoint))
@@ -63,7 +86,7 @@ if __name__ == '__main__':
             files = [f for f in os.listdir(sub_folder) if f.endswith('.wav')]
             for f in files:
                 audiopath = os.path.join(sub_folder, f)
-                samples.append({'audiopath': audiopath, 'label': label})
+                samples.append({'audiopath': audiopath, 'label': label, 'id': id})
 
     num_samples = len(samples)
     print('num_samples: ' + str(num_samples))
@@ -71,11 +94,11 @@ if __name__ == '__main__':
     embeddings = np.zeros((num_samples, 512), dtype=np.float)
     dots = []
     labels = []
+    ids = []
     with torch.no_grad():
         for i in tqdm(range(num_samples)):
             sample = samples[i]
             wave = sample['audiopath']
-            label = sample['label']
             mel = extract_feature(input_file=wave, feature='fbank', dim=hp.n_mels, cmvn=True)
             # mel = build_LFR_features(mel, m=hp.LFR_m, n=hp.LFR_n)
             mel = torch.unsqueeze(torch.from_numpy(mel), dim=0)
@@ -84,7 +107,8 @@ if __name__ == '__main__':
             feature = feature.cpu().numpy()
             feature = feature / np.linalg.norm(feature)
             embeddings[i] = feature
-            labels.append(label)
+            labels.append(sample['label'])
+            ids.append(sample['id'])
     # print(labels)
 
     print('t-SNE: fitting transform...')
@@ -93,7 +117,10 @@ if __name__ == '__main__':
 
     cmap, norm = get_cmap()
 
+    xs, ys, ids = get_annotations(two_d_embeddings, ids)
+
     pylab.figure(figsize=(15, 15))
     pylab.scatter(two_d_embeddings[:, 0], two_d_embeddings[:, 1], c=labels, cmap=cmap, norm=norm, alpha=0.8,
                   edgecolors='none', s=10)
+    pylab.annotate(ids, xy=(xs, ys), xytext=(5, 2), textcoords='offset points', ha='right', va='bottom')
     pylab.show()
