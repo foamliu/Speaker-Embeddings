@@ -11,7 +11,7 @@ from tqdm import tqdm
 
 import config as hp
 from models.embedder import GST
-from utils import extract_feature
+from utils import extract_feature, ensure_folder
 
 test_file = 'data/test_pairs.txt'
 angles_file = 'data/angles.txt'
@@ -184,6 +184,7 @@ def visualize(threshold):
 
     plt.legend(loc='upper right')
     plt.plot([threshold, threshold], [0, 0.05], 'k-', lw=2)
+    ensure_folder('images')
     plt.savefig('images/theta_dist.png')
     plt.show()
 
