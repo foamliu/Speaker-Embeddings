@@ -54,9 +54,9 @@ $ tensorboard --logdir runs
 ```
 
 ### Performance
-Margin-s|Margin-m|Test(%)|Inference speed| 
-|---|---|---|---|
-|10.0|0.0|84.67%|18.18 ms|
+Model|Margin-s|Margin-m|Test(%)|Inference speed|
+|---|---|---|---|---|
+|1|10.0|0.0|84.67%|18.18 ms|
 
 
 
