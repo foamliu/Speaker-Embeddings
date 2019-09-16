@@ -58,6 +58,8 @@ def gen_test_pairs():
 
 
 def evaluate(model):
+    model.eval()
+
     with open(test_file, 'r') as file:
         lines = file.readlines()
 
@@ -71,13 +73,15 @@ def evaluate(model):
             mel0 = extract_feature(input_file=file0, feature='fbank', dim=hp.n_mels, cmvn=True)
             mel0 = torch.unsqueeze(torch.from_numpy(mel0), dim=0)
             mel0 = mel0.to(hp.device)
-            output = model(mel0)[0]
+            with torch.no_grad():
+                output = model(mel0)[0]
             feature0 = output.cpu().numpy()
 
             file1 = tokens[1]
             mel1 = extract_feature(input_file=file1, feature='fbank', dim=hp.n_mels, cmvn=True)
             mel1 = torch.unsqueeze(torch.from_numpy(mel1), dim=0)
-            mel1 = mel1.to(hp.device)
+            with torch.no_grad():
+                mel1 = mel1.to(hp.device)
             output = model(mel1)[0]
             feature1 = output.cpu().numpy()
 
@@ -231,7 +235,6 @@ if __name__ == "__main__":
     model = GST()
     model.load_state_dict(torch.load(checkpoint))
     model = model.to(hp.device)
-    model.eval()
 
     acc, thres = test(model)
 
