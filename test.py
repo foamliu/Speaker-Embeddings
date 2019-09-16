@@ -184,9 +184,10 @@ def visualize(threshold):
 
     plt.legend(loc='upper right')
     plt.plot([threshold, threshold], [0, 0.05], 'k-', lw=2)
+    plt.show()
+
     ensure_folder('images')
     plt.savefig('images/theta_dist.png')
-    plt.show()
 
 
 def error_analysis(threshold):
