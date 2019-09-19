@@ -87,8 +87,8 @@ def parse_args():
     parser.add_argument('--batch-size', default=32, type=int, help='Batch size')
     parser.add_argument('--num-workers', default=4, type=int, help='Number of workers to generate minibatch')
     # optimizer
-    parser.add_argument('--margin-m', type=float, default=0.1, help='angular margin m')
-    parser.add_argument('--margin-s', type=float, default=10.0, help='feature scale s')
+    parser.add_argument('--margin-m', type=float, default=0.2, help='angular margin m')
+    parser.add_argument('--margin-s', type=float, default=64.0, help='feature scale s')
     parser.add_argument('--emb-size', type=int, default=512, help='embedding length')
     parser.add_argument('--easy-margin', type=bool, default=False, help='easy margin')
     parser.add_argument('--weight-decay', type=float, default=0.0, help='weight decay')
