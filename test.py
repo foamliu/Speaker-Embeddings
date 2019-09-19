@@ -80,7 +80,7 @@ def evaluate(model):
 
             file1 = tokens[1]
             mel1 = extract_feature(input_file=file1, feature='fbank', dim=hp.n_mels, cmvn=True)
-            mel0 = build_LFR_features(mel0, m=hp.LFR_m, n=hp.LFR_n)
+            mel1 = build_LFR_features(mel1, m=hp.LFR_m, n=hp.LFR_n)
             mel1 = torch.unsqueeze(torch.from_numpy(mel1), dim=0)
             with torch.no_grad():
                 mel1 = mel1.to(hp.device)
