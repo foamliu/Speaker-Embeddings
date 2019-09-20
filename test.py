@@ -71,7 +71,7 @@ def evaluate(model):
             tokens = line.split()
             file0 = tokens[0]
             mel0 = extract_feature(input_file=file0, feature='fbank', dim=hp.n_mels, cmvn=True)
-            mel0 = build_LFR_features(mel0, m=hp.LFR_m, n=hp.LFR_n)
+            # mel0 = build_LFR_features(mel0, m=hp.LFR_m, n=hp.LFR_n)
             mel0 = torch.unsqueeze(torch.from_numpy(mel0), dim=0)
             mel0 = mel0.to(hp.device)
             with torch.no_grad():
@@ -80,7 +80,7 @@ def evaluate(model):
 
             file1 = tokens[1]
             mel1 = extract_feature(input_file=file1, feature='fbank', dim=hp.n_mels, cmvn=True)
-            mel1 = build_LFR_features(mel1, m=hp.LFR_m, n=hp.LFR_n)
+            # mel1 = build_LFR_features(mel1, m=hp.LFR_m, n=hp.LFR_n)
             mel1 = torch.unsqueeze(torch.from_numpy(mel1), dim=0)
             with torch.no_grad():
                 mel1 = mel1.to(hp.device)
