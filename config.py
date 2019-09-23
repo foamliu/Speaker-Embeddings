@@ -15,8 +15,8 @@ LFR_m = 4  # change to 4 if use LFR
 LFR_n = 3
 
 # Reference encoder
-ref_enc_filters = [32, 32, 64, 64, 128, 128]
-# ref_enc_filters = [64, 64, 128, 128, 256, 256]
+# ref_enc_filters = [32, 32, 64, 64, 128, 128]
+ref_enc_filters = [64, 64, 128, 128, 256, 256]
 
 # Style token layer
 token_num = 1024
